@@ -15,6 +15,8 @@ import {
 import { FileDown, FileText, Share2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
 // Type definitions for structured CV data
 type Project = {
@@ -22,6 +24,11 @@ type Project = {
   role: string;
   tools: string;
   impact: string;
+  useStar: boolean;
+  situation: string;
+  task: string;
+  action: string;
+  result: string;
 };
 
 type Education = {
@@ -36,6 +43,11 @@ type Leadership = {
   organization: string;
   timeframe: string;
   contribution: string;
+  useStar: boolean;
+  situation: string;
+  task: string;
+  action: string;
+  result: string;
 };
 
 type Certification = {
@@ -65,6 +77,11 @@ const initialCvData = {
       role: "Lead Developer",
       tools: "Python, PostgreSQL, Flask",
       impact: "Enabled 50+ students to access lecture notes online, reducing search time by 40%.",
+      useStar: false,
+      situation: "",
+      task: "",
+      action: "",
+      result: ""
     },
   ],
   education: [
@@ -81,6 +98,11 @@ const initialCvData = {
       organization: "Coding Club",
       timeframe: "2022-2023",
       contribution: "Organized weekly meetings and workshops for 50+ members.",
+      useStar: false,
+      situation: "",
+      task: "",
+      action: "",
+      result: ""
     },
   ],
   certifications: [
@@ -102,7 +124,7 @@ export default function SkillBasedCvEditorPage() {
     const [leadership, setLeadership] = useState<Leadership[]>(initialCvData.leadership);
     const [certifications, setCertifications] = useState<Certification[]>(initialCvData.certifications);
 
-    const handleListChange = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, index: number, field: keyof T, value: string) => {
+    const handleListChange = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, index: number, field: keyof T, value: string | boolean) => {
         const updatedList = [...list];
         updatedList[index] = {...updatedList[index], [field]: value };
         setList(updatedList);
@@ -115,6 +137,30 @@ export default function SkillBasedCvEditorPage() {
     const removeListItem = <T,>(setList: React.Dispatch<React.SetStateAction<T[]>>, index: number) => {
         setList(prev => prev.filter((_, i) => i !== index));
     };
+
+    const formatProjectBullet = (proj: Project) => {
+      if (proj.useStar) {
+        let bullet = '';
+        if (proj.situation) bullet += `${proj.situation}. `;
+        if (proj.task) bullet += `${proj.task}. `;
+        if (proj.action) bullet += `Took initiative by ${proj.action.charAt(0).toLowerCase() + proj.action.slice(1)}. `;
+        if (proj.result) bullet += `This resulted in ${proj.result.charAt(0).toLowerCase() + proj.result.slice(1)}.`;
+        return bullet.trim();
+      }
+      return `Developed a ${proj.name.toLowerCase()} using ${proj.tools}, which ${proj.impact.charAt(0).toLowerCase() + proj.impact.slice(1)}`;
+    }
+
+    const formatLeadershipBullet = (item: Leadership) => {
+      if (item.useStar) {
+        let bullet = '';
+        if (item.situation) bullet += `${item.situation}. `;
+        if (item.task) bullet += `${item.task}. `;
+        if (item.action) bullet += `Took initiative by ${item.action.charAt(0).toLowerCase() + item.action.slice(1)}. `;
+        if (item.result) bullet += `This resulted in ${item.result.charAt(0).toLowerCase() + item.result.slice(1)}.`;
+        return bullet.trim();
+      }
+      return item.contribution;
+    }
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -211,13 +257,37 @@ export default function SkillBasedCvEditorPage() {
                             <Label>Tools Used</Label>
                             <Input value={proj.tools} onChange={e => handleListChange(projects, setProjects, i, 'tools', e.target.value)} />
                         </div>
-                        <div className="grid gap-2">
-                            <Label>Impact / Outcome</Label>
-                            <Textarea value={proj.impact} onChange={e => handleListChange(projects, setProjects, i, 'impact', e.target.value)} rows={2}/>
+                         <div className="flex items-center space-x-2 mt-4">
+                            <Switch id={`project-star-switch-${i}`} checked={proj.useStar} onCheckedChange={(checked) => handleListChange(projects, setProjects, i, 'useStar', checked)} />
+                            <Label htmlFor={`project-star-switch-${i}`}>Use STAR Framework Input</Label>
+                        </div>
+                        <div className={cn("space-y-4", proj.useStar ? 'hidden' : 'block')}>
+                            <div className="grid gap-2">
+                                <Label>Impact / Outcome</Label>
+                                <Textarea value={proj.impact} onChange={e => handleListChange(projects, setProjects, i, 'impact', e.target.value)} rows={2}/>
+                            </div>
+                        </div>
+                         <div className={cn("space-y-4", proj.useStar ? 'block' : 'hidden')}>
+                            <div className="grid gap-2">
+                                <Label>Situation</Label>
+                                <Textarea placeholder="What was the context?" value={proj.situation} onChange={e => handleListChange(projects, setProjects, i, 'situation', e.target.value)} rows={2}/>
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>Task</Label>
+                                <Textarea placeholder="What was your responsibility?" value={proj.task} onChange={e => handleListChange(projects, setProjects, i, 'task', e.target.value)} rows={2}/>
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>Action</Label>
+                                <Textarea placeholder="What steps did you take?" value={proj.action} onChange={e => handleListChange(projects, setProjects, i, 'action', e.target.value)} rows={2}/>
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>Result</Label>
+                                <Textarea placeholder="What was the outcome?" value={proj.result} onChange={e => handleListChange(projects, setProjects, i, 'result', e.target.value)} rows={2}/>
+                            </div>
                         </div>
                     </div>
                 ))}
-                <Button variant="outline" onClick={() => addListItem(setProjects, {name: '', role: '', tools: '', impact: ''})}>Add Project</Button>
+                <Button variant="outline" onClick={() => addListItem(setProjects, {name: '', role: '', tools: '', impact: '', useStar: false, situation: '', task: '', action: '', result: ''})}>Add Project</Button>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="education">
@@ -271,13 +341,37 @@ export default function SkillBasedCvEditorPage() {
                             <Label>Timeframe</Label>
                             <Input value={item.timeframe} onChange={e => handleListChange(leadership, setLeadership, i, 'timeframe', e.target.value)} />
                         </div>
-                        <div className="grid gap-2">
-                            <Label>Key Contribution</Label>
-                            <Textarea value={item.contribution} onChange={e => handleListChange(leadership, setLeadership, i, 'contribution', e.target.value)} rows={2} />
+                        <div className="flex items-center space-x-2 mt-4">
+                            <Switch id={`leadership-star-switch-${i}`} checked={item.useStar} onCheckedChange={(checked) => handleListChange(leadership, setLeadership, i, 'useStar', checked)} />
+                            <Label htmlFor={`leadership-star-switch-${i}`}>Use STAR Framework Input</Label>
+                        </div>
+                        <div className={cn("space-y-4", item.useStar ? 'hidden' : 'block')}>
+                            <div className="grid gap-2">
+                                <Label>Key Contribution</Label>
+                                <Textarea value={item.contribution} onChange={e => handleListChange(leadership, setLeadership, i, 'contribution', e.target.value)} rows={2} />
+                            </div>
+                        </div>
+                        <div className={cn("space-y-4", item.useStar ? 'block' : 'hidden')}>
+                           <div className="grid gap-2">
+                                <Label>Situation</Label>
+                                <Textarea placeholder="What was the context?" value={item.situation} onChange={e => handleListChange(leadership, setLeadership, i, 'situation', e.target.value)} rows={2}/>
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>Task</Label>
+                                <Textarea placeholder="What was your responsibility?" value={item.task} onChange={e => handleListChange(leadership, setLeadership, i, 'task', e.target.value)} rows={2}/>
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>Action</Label>
+                                <Textarea placeholder="What steps did you take?" value={item.action} onChange={e => handleListChange(leadership, setLeadership, i, 'action', e.target.value)} rows={2}/>
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>Result</Label>
+                                <Textarea placeholder="What was the outcome?" value={item.result} onChange={e => handleListChange(leadership, setLeadership, i, 'result', e.target.value)} rows={2}/>
+                            </div>
                         </div>
                     </div>
                  ))}
-                 <Button variant="outline" onClick={() => addListItem(setLeadership, {role: '', organization: '', timeframe: '', contribution: ''})}>Add Involvement</Button>
+                 <Button variant="outline" onClick={() => addListItem(setLeadership, {role: '', organization: '', timeframe: '', contribution: '', useStar: false, situation: '', task: '', action: '', result: ''})}>Add Involvement</Button>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="certifications">
@@ -344,7 +438,7 @@ export default function SkillBasedCvEditorPage() {
                         <strong>{proj.name}</strong> | <em>{proj.role}</em>
                       </p>
                       <p className="whitespace-pre-wrap">
-                        - Developed a {proj.name.toLowerCase()} using {proj.tools}, which {proj.impact.charAt(0).toLowerCase() + proj.impact.slice(1)}
+                        - {formatProjectBullet(proj)}
                       </p>
                     </div>
                   ) : null
@@ -367,7 +461,7 @@ export default function SkillBasedCvEditorPage() {
                 {leadership.map((item, i) => item.role && (
                     <div key={i} className="text-sm mb-2">
                         <p>{item.role} | {item.organization} | {item.timeframe}</p>
-                        <p className="whitespace-pre-wrap">- {item.contribution}</p>
+                        <p className="whitespace-pre-wrap">- {formatLeadershipBullet(item)}</p>
                     </div>
                 ))}
             </div>}
@@ -384,5 +478,7 @@ export default function SkillBasedCvEditorPage() {
     </div>
   );
 }
+
+    
 
     
