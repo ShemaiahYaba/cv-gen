@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -11,30 +12,109 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FileDown, FileText, Share2 } from "lucide-react";
+import { FileDown, FileText, Share2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
 
-export default function SkillBasedCvEditorPage() {
-    const [cvData, setCvData] = useState({
-        fullName: "Jane Doe",
-        email: "jane.doe@example.com",
-        phone: "+1 234 567 890",
-        linkedin: "linkedin.com/in/janedoe",
-        github: "github.com/janedoe",
-        summary: "A passionate computer science student with a strong foundation in software development and a keen interest in AI and machine learning. Seeking opportunities to apply my skills to real-world challenges.",
-        technicalSkills: "Python, JavaScript, React, Node.js, PostgreSQL",
-        softSkills: "Teamwork, Communication, Problem-Solving, Leadership",
-        projects: "Academic Repository | Role: Lead Developer\n- Built an academic repository using Python & PostgreSQL; enabled 50+ students to access lecture notes online, reducing search time by 40%.",
-        education: "B.S. in Computer Science | University of Technology | 2024\n- GPA: 3.8/4.0",
-        leadership: "President | Coding Club | 2022-2023\n- Organized weekly meetings and workshops for 50+ members.",
-        certifications: "Certified Python Developer | Python Institute | 2022",
-    });
+// Type definitions for structured CV data
+type Project = {
+  name: string;
+  role: string;
+  tools: string;
+  impact: string;
+};
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setCvData(prev => ({...prev, [name]: value}));
-    }
+type Education = {
+  degree: string;
+  school: string;
+  year: string;
+  honors: string;
+};
+
+type Leadership = {
+  role: string;
+  organization: string;
+  timeframe: string;
+  contribution: string;
+};
+
+type Certification = {
+    name: string;
+    issuer: string;
+    year: string;
+}
+
+// Initial state with structured data
+const initialCvData = {
+  personal: {
+    fullName: "Jane Doe",
+    email: "jane.doe@example.com",
+    phone: "+1 234 567 890",
+    linkedin: "linkedin.com/in/janedoe",
+    github: "github.com/janedoe",
+  },
+  summary:
+    "A passionate computer science student with a strong foundation in software development and a keen interest in AI and machine learning. Seeking opportunities to apply my skills to real-world challenges.",
+  skills: {
+    technical: "Python, JavaScript, React, Node.js, PostgreSQL",
+    soft: "Teamwork, Communication, Problem-Solving, Leadership",
+  },
+  projects: [
+    {
+      name: "Academic Repository",
+      role: "Lead Developer",
+      tools: "Python, PostgreSQL, Flask",
+      impact: "Enabled 50+ students to access lecture notes online, reducing search time by 40%.",
+    },
+  ],
+  education: [
+    {
+      degree: "B.S. in Computer Science",
+      school: "University of Technology",
+      year: "2024",
+      honors: "GPA: 3.8/4.0, Dean's List",
+    },
+  ],
+  leadership: [
+    {
+      role: "President",
+      organization: "Coding Club",
+      timeframe: "2022-2023",
+      contribution: "Organized weekly meetings and workshops for 50+ members.",
+    },
+  ],
+  certifications: [
+    {
+      name: "Certified Python Developer",
+      issuer: "Python Institute",
+      year: "2022",
+    },
+  ],
+};
+
+
+export default function SkillBasedCvEditorPage() {
+    const [personal, setPersonal] = useState(initialCvData.personal);
+    const [summary, setSummary] = useState(initialCvData.summary);
+    const [skills, setSkills] = useState(initialCvData.skills);
+    const [projects, setProjects] = useState<Project[]>(initialCvData.projects);
+    const [education, setEducation] = useState<Education[]>(initialCvData.education);
+    const [leadership, setLeadership] = useState<Leadership[]>(initialCvData.leadership);
+    const [certifications, setCertifications] = useState<Certification[]>(initialCvData.certifications);
+
+    const handleListChange = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, index: number, field: keyof T, value: string) => {
+        const updatedList = [...list];
+        updatedList[index] = {...updatedList[index], [field]: value };
+        setList(updatedList);
+    };
+    
+    const addListItem = <T,>(setList: React.Dispatch<React.SetStateAction<T[]>>, newItem: T) => {
+        setList(prev => [...prev, newItem]);
+    };
+
+    const removeListItem = <T,>(setList: React.Dispatch<React.SetStateAction<T[]>>, index: number) => {
+        setList(prev => prev.filter((_, i) => i !== index));
+    };
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -62,77 +142,169 @@ export default function SkillBasedCvEditorPage() {
       <div className="flex-1 grid md:grid-cols-2 overflow-hidden">
         <aside className="overflow-y-auto p-6 border-r">
           <h2 className="text-2xl font-headline font-bold mb-6">Edit Content</h2>
-          <Accordion type="multiple" defaultValue={["personal", "skills"]} className="w-full">
+          <Accordion type="multiple" defaultValue={["personal", "skills"]} className="w-full space-y-4">
             <AccordionItem value="personal">
               <AccordionTrigger>Personal Info</AccordionTrigger>
-              <AccordionContent className="space-y-4">
+              <AccordionContent className="space-y-4 pt-4">
                 <div className="grid gap-2">
                   <Label htmlFor="fullName">Full Name</Label>
-                  <Input id="fullName" name="fullName" value={cvData.fullName} onChange={handleChange} />
+                  <Input id="fullName" value={personal.fullName} onChange={(e) => setPersonal(p => ({...p, fullName: e.target.value}))} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" value={cvData.email} onChange={handleChange} />
+                        <Input id="email" type="email" value={personal.email} onChange={(e) => setPersonal(p => ({...p, email: e.target.value}))} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" name="phone" value={cvData.phone} onChange={handleChange} />
+                        <Input id="phone" value={personal.phone} onChange={(e) => setPersonal(p => ({...p, phone: e.target.value}))} />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="linkedin">LinkedIn</Label>
-                        <Input id="linkedin" name="linkedin" value={cvData.linkedin} onChange={handleChange} />
+                        <Input id="linkedin" value={personal.linkedin} onChange={(e) => setPersonal(p => ({...p, linkedin: e.target.value}))} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="github">GitHub</Label>
-                        <Input id="github" name="github" value={cvData.github} onChange={handleChange} />
+                        <Input id="github" value={personal.github} onChange={(e) => setPersonal(p => ({...p, github: e.target.value}))} />
                     </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="summary">
               <AccordionTrigger>Professional Summary</AccordionTrigger>
-              <AccordionContent>
-                <Textarea placeholder="1-2 sentence self-description" name="summary" value={cvData.summary} onChange={handleChange} rows={3} />
+              <AccordionContent className="pt-4">
+                <Textarea placeholder="1-2 sentence self-description" value={summary} onChange={(e) => setSummary(e.target.value)} rows={3} />
               </AccordionContent>
             </AccordionItem>
              <AccordionItem value="skills">
               <AccordionTrigger>Core Skills</AccordionTrigger>
-              <AccordionContent className="space-y-4">
+              <AccordionContent className="space-y-4 pt-4">
                 <div className="grid gap-2">
                     <Label htmlFor="technicalSkills">Technical Skills</Label>
-                    <Textarea placeholder="Comma-separated technical skills" name="technicalSkills" value={cvData.technicalSkills} onChange={handleChange} rows={3} />
+                    <Textarea placeholder="Comma-separated technical skills" value={skills.technical} onChange={(e) => setSkills(s => ({...s, technical: e.target.value}))} rows={3} />
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="softSkills">Soft Skills</Label>
-                    <Textarea placeholder="Comma-separated soft skills" name="softSkills" value={cvData.softSkills} onChange={handleChange} rows={3} />
+                    <Textarea placeholder="Comma-separated soft skills" value={skills.soft} onChange={(e) => setSkills(s => ({...s, soft: e.target.value}))} rows={3} />
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="projects">
               <AccordionTrigger>Projects / Initiatives</AccordionTrigger>
-              <AccordionContent>
-                <Textarea placeholder="Title | Role&#10;- Outcome / metric" name="projects" value={cvData.projects} onChange={handleChange} rows={8} />
+              <AccordionContent className="space-y-6 pt-4">
+                {projects.map((proj, i) => (
+                    <div key={i} className="space-y-4 p-4 border rounded-md relative">
+                         <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeListItem(setProjects, i)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                        <div className="grid gap-2">
+                            <Label>Project Name</Label>
+                            <Input value={proj.name} onChange={e => handleListChange(projects, setProjects, i, 'name', e.target.value)} />
+                        </div>
+                         <div className="grid gap-2">
+                            <Label>Role</Label>
+                            <Input value={proj.role} onChange={e => handleListChange(projects, setProjects, i, 'role', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Tools Used</Label>
+                            <Input value={proj.tools} onChange={e => handleListChange(projects, setProjects, i, 'tools', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Impact / Outcome</Label>
+                            <Textarea value={proj.impact} onChange={e => handleListChange(projects, setProjects, i, 'impact', e.target.value)} rows={2}/>
+                        </div>
+                    </div>
+                ))}
+                <Button variant="outline" onClick={() => addListItem(setProjects, {name: '', role: '', tools: '', impact: ''})}>Add Project</Button>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="education">
               <AccordionTrigger>Education</AccordionTrigger>
-              <AccordionContent>
-                 <Textarea placeholder="Degree | School | Year&#10;- GPA / Honors" name="education" value={cvData.education} onChange={handleChange} rows={4} />
+              <AccordionContent className="space-y-6 pt-4">
+                {education.map((edu, i) => (
+                    <div key={i} className="space-y-4 p-4 border rounded-md relative">
+                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeListItem(setEducation, i)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                        <div className="grid gap-2">
+                           <Label>Degree / Program</Label>
+                           <Input value={edu.degree} onChange={e => handleListChange(education, setEducation, i, 'degree', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                           <Label>School / University</Label>
+                           <Input value={edu.school} onChange={e => handleListChange(education, setEducation, i, 'school', e.target.value)} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                           <div className="grid gap-2">
+                              <Label>Graduation Year</Label>
+                              <Input value={edu.year} onChange={e => handleListChange(education, setEducation, i, 'year', e.target.value)} />
+                           </div>
+                           <div className="grid gap-2">
+                              <Label>GPA / Honors (Optional)</Label>
+                              <Input value={edu.honors} onChange={e => handleListChange(education, setEducation, i, 'honors', e.target.value)} />
+                           </div>
+                        </div>
+                    </div>
+                ))}
+                 <Button variant="outline" onClick={() => addListItem(setEducation, {degree: '', school: '', year: '', honors: ''})}>Add Education</Button>
               </AccordionContent>
             </AccordionItem>
              <AccordionItem value="leadership">
               <AccordionTrigger>Leadership & Involvement</AccordionTrigger>
-              <AccordionContent>
-                 <Textarea placeholder="Role | Organization | Timeframe&#10;- Key contribution" name="leadership" value={cvData.leadership} onChange={handleChange} rows={4} />
+              <AccordionContent className="space-y-6 pt-4">
+                 {leadership.map((item, i) => (
+                    <div key={i} className="space-y-4 p-4 border rounded-md relative">
+                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeListItem(setLeadership, i)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                        <div className="grid gap-2">
+                            <Label>Role</Label>
+                            <Input value={item.role} onChange={e => handleListChange(leadership, setLeadership, i, 'role', e.target.value)} />
+                        </div>
+                         <div className="grid gap-2">
+                            <Label>Organization</Label>
+                            <Input value={item.organization} onChange={e => handleListChange(leadership, setLeadership, i, 'organization', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Timeframe</Label>
+                            <Input value={item.timeframe} onChange={e => handleListChange(leadership, setLeadership, i, 'timeframe', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Key Contribution</Label>
+                            <Textarea value={item.contribution} onChange={e => handleListChange(leadership, setLeadership, i, 'contribution', e.target.value)} rows={2} />
+                        </div>
+                    </div>
+                 ))}
+                 <Button variant="outline" onClick={() => addListItem(setLeadership, {role: '', organization: '', timeframe: '', contribution: ''})}>Add Involvement</Button>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="certifications">
-              <AccordionTrigger>Certifications / Awards</AccordionTrigger>
-              <AccordionContent>
-                 <Textarea placeholder="Name | Issuer | Year" name="certifications" value={cvData.certifications} onChange={handleChange} rows={3} />
+              <AccordionTrigger>Certifications & Awards</AccordionTrigger>
+              <AccordionContent className="space-y-6 pt-4">
+                 {certifications.map((cert, i) => (
+                     <div key={i} className="space-y-4 p-4 border rounded-md relative">
+                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeListItem(setCertifications, i)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                        <div className="grid gap-2">
+                            <Label>Name</Label>
+                            <Input value={cert.name} onChange={e => handleListChange(certifications, setCertifications, i, 'name', e.target.value)} />
+                        </div>
+                         <div className="grid grid-cols-2 gap-4">
+                           <div className="grid gap-2">
+                                <Label>Issuer</Label>
+                                <Input value={cert.issuer} onChange={e => handleListChange(certifications, setCertifications, i, 'issuer', e.target.value)} />
+                           </div>
+                           <div className="grid gap-2">
+                                <Label>Year</Label>
+                                <Input value={cert.year} onChange={e => handleListChange(certifications, setCertifications, i, 'year', e.target.value)} />
+                           </div>
+                        </div>
+                    </div>
+                 ))}
+                 <Button variant="outline" onClick={() => addListItem(setCertifications, {name: '', issuer: '', year: ''})}>Add Certification</Button>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -140,50 +312,69 @@ export default function SkillBasedCvEditorPage() {
         
         <main className="overflow-y-auto p-8 lg:p-12 bg-muted/30">
           <div className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black" style={{ aspectRatio: '8.5 / 11'}}>
-            <h1 className="text-4xl font-bold font-headline text-center mb-2">{cvData.fullName}</h1>
+            <h1 className="text-4xl font-bold font-headline text-center mb-2">{personal.fullName}</h1>
             <div className="flex justify-center text-xs mb-6 space-x-3">
-                <span>{cvData.email}</span>
-                <span>|</span>
-                <span>{cvData.phone}</span>
-                <span>|</span>
-                <span>{cvData.linkedin}</span>
-                <span>|</span>
-                <span>{cvData.github}</span>
+                {personal.email && <span>{personal.email}</span>}
+                {personal.email && personal.phone && <span>|</span>}
+                {personal.phone && <span>{personal.phone}</span>}
+                {personal.phone && personal.linkedin && <span>|</span>}
+                {personal.linkedin && <span>{personal.linkedin}</span>}
+                {personal.linkedin && personal.github && <span>|</span>}
+                {personal.github && <span>{personal.github}</span>}
             </div>
             
-            {cvData.summary && <div className="mb-6">
+            {summary && <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Professional Summary</h2>
-                <p className="text-sm">{cvData.summary}</p>
+                <p className="text-sm">{summary}</p>
             </div>}
             
-            <div className="mb-6">
+            {(skills.technical || skills.soft) && <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Core Skills</h2>
-                <p className="text-sm"><strong>Technical:</strong> {cvData.technicalSkills}</p>
-                <p className="text-sm"><strong>Soft:</strong> {cvData.softSkills}</p>
-            </div>
+                {skills.technical && <p className="text-sm"><strong>Technical:</strong> {skills.technical}</p>}
+                {skills.soft && <p className="text-sm"><strong>Soft:</strong> {skills.soft}</p>}
+            </div>}
 
-             <div className="mb-6">
+            {projects.length > 0 && projects[0].name && <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Projects</h2>
-                <div className="text-sm whitespace-pre-wrap">{cvData.projects}</div>
-            </div>
+                {projects.map((proj, i) => proj.name && (
+                    <div key={i} className="text-sm mb-2">
+                        <p><strong>{proj.name} | {proj.role}</strong></p>
+                        <p className="whitespace-pre-wrap">- {`Built with ${proj.tools}; ${proj.impact}`}</p>
+                    </div>
+                ))}
+            </div>}
 
-            <div className="mb-6">
+            {education.length > 0 && education[0].degree && <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Education</h2>
-                <p className="text-sm whitespace-pre-wrap">{cvData.education}</p>
-            </div>
+                {education.map((edu, i) => edu.degree && (
+                    <div key={i} className="text-sm mb-2">
+                       <p>{edu.degree} | {edu.school} | {edu.year}</p>
+                       {edu.honors && <p className="whitespace-pre-wrap">- {edu.honors}</p>}
+                    </div>
+                ))}
+            </div>}
 
-            <div className="mb-6">
+            {leadership.length > 0 && leadership[0].role && <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Leadership & Involvement</h2>
-                <p className="text-sm whitespace-pre-wrap">{cvData.leadership}</p>
-            </div>
+                {leadership.map((item, i) => item.role && (
+                    <div key={i} className="text-sm mb-2">
+                        <p>{item.role} | {item.organization} | {item.timeframe}</p>
+                        <p className="whitespace-pre-wrap">- {item.contribution}</p>
+                    </div>
+                ))}
+            </div>}
 
-            <div>
+            {certifications.length > 0 && certifications[0].name && <div>
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Certifications & Awards</h2>
-                <p className="text-sm whitespace-pre-wrap">{cvData.certifications}</p>
-            </div>
+                {certifications.map((cert, i) => cert.name && (
+                    <p key={i} className="text-sm">{cert.name} | {cert.issuer} | {cert.year}</p>
+                ))}
+            </div>}
           </div>
         </main>
       </div>
     </div>
   );
 }
+
+    
