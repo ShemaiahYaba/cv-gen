@@ -334,15 +334,23 @@ export default function SkillBasedCvEditorPage() {
                 {skills.soft && <p className="text-sm"><strong>Soft:</strong> {skills.soft}</p>}
             </div>}
 
-            {projects.length > 0 && projects[0].name && <div className="mb-6">
+            {projects.length > 0 && projects[0].name && (
+              <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Projects</h2>
-                {projects.map((proj, i) => proj.name && (
+                {projects.map((proj, i) =>
+                  proj.name ? (
                     <div key={i} className="text-sm mb-2">
-                        <p><strong>{proj.name} | {proj.role}</strong></p>
-                        <p className="whitespace-pre-wrap">- {`Built with ${proj.tools}; ${proj.impact}`}</p>
+                      <p>
+                        <strong>{proj.name}</strong> | <em>{proj.role}</em>
+                      </p>
+                      <p className="whitespace-pre-wrap">
+                        - Developed a {proj.name.toLowerCase()} using {proj.tools}, which {proj.impact.charAt(0).toLowerCase() + proj.impact.slice(1)}
+                      </p>
                     </div>
-                ))}
-            </div>}
+                  ) : null
+                )}
+              </div>
+            )}
 
             {education.length > 0 && education[0].degree && <div className="mb-6">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-wider border-b pb-1 mb-2">Education</h2>
