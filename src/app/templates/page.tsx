@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowLeft, Bot, PenSquare, Star } from "lucide-react";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const templates = [
   {
@@ -34,8 +32,6 @@ const templates = [
 ];
 
 export default function TemplatesPage() {
-  const cvThumbnail = PlaceHolderImages.find((img) => img.id === "cv-thumbnail");
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="text-center mb-12 max-w-2xl">
@@ -48,9 +44,9 @@ export default function TemplatesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
         {templates.map((template) => (
           <Link href={template.href} key={template.title}>
-            <Card className="group hover:border-primary transition-all duration-300 hover:shadow-xl h-full flex flex-col">
+            <Card className="group hover:border-primary transition-all duration-300 hover:shadow-xl h-full flex flex-col justify-between">
               <CardHeader>
-                <div className="flex items-center gap-4">
+                <div className="flex items-start gap-4">
                   <div className="bg-primary text-primary-foreground rounded-full p-3 group-hover:scale-110 transition-transform">
                     {template.icon}
                   </div>
@@ -60,20 +56,8 @@ export default function TemplatesPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center bg-muted/50 p-4">
-                {cvThumbnail && (
-                  <Image
-                    src={cvThumbnail.imageUrl}
-                    alt={cvThumbnail.description}
-                    width={200}
-                    height={283}
-                    data-ai-hint={cvThumbnail.imageHint}
-                    className="rounded-md shadow-lg"
-                  />
-                )}
-              </CardContent>
-              <CardFooter className="justify-center">
-                  <Button variant="outline">Use Template</Button>
+              <CardFooter>
+                  <Button variant="outline" className="w-full">Use Template</Button>
               </CardFooter>
             </Card>
           </Link>
