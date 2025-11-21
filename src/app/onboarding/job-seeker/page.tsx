@@ -5,7 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, PenSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const options = [
     {
@@ -51,6 +52,13 @@ export default function JobSeekerOnboardingPage() {
             </Card>
             </Link>
         ))}
+      </div>
+      <div className="mt-12">
+        <Button variant="outline" asChild>
+            <Link href="/onboarding">
+                <ArrowLeft /> Go Back
+            </Link>
+        </Button>
       </div>
     </div>
   );

@@ -5,7 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowRight, BookUser, Briefcase } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookUser, Briefcase } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function OnboardingPage() {
   return (
@@ -50,6 +51,14 @@ export default function OnboardingPage() {
             </CardHeader>
           </Card>
         </Link>
+      </div>
+
+      <div className="mt-12">
+        <Button variant="outline" asChild>
+            <Link href="/dashboard">
+                <ArrowLeft /> Go Back
+            </Link>
+        </Button>
       </div>
     </div>
   );
