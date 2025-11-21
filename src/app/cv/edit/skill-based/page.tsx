@@ -407,13 +407,10 @@ export default function SkillBasedCvEditorPage() {
         <main className="overflow-y-auto p-8 lg:p-12 bg-muted/30">
           <div className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black" style={{ aspectRatio: '8.5 / 11'}}>
             <h1 className="text-4xl font-bold font-headline text-center mb-2">{personal.fullName}</h1>
-            <div className="flex justify-center text-xs mb-6 space-x-3">
+            <div className="flex flex-col items-center text-xs mb-6 space-y-1">
                 {personal.email && <span>{personal.email}</span>}
-                {personal.email && personal.phone && <span>|</span>}
                 {personal.phone && <span>{personal.phone}</span>}
-                {personal.phone && personal.linkedin && <span>|</span>}
                 {personal.linkedin && <span>{personal.linkedin}</span>}
-                {personal.linkedin && personal.github && <span>|</span>}
                 {personal.github && <span>{personal.github}</span>}
             </div>
             
