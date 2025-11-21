@@ -186,7 +186,7 @@ export default function SkillBasedCvEditorPage() {
         </div>
       </header>
       <div className="flex-1 grid md:grid-cols-2 overflow-hidden">
-        <aside className="overflow-y-auto p-6 border-r">
+        <aside className="overflow-y-auto p-6 md:p-8 border-r">
           <h2 className="text-2xl font-headline font-bold mb-6">Edit Content</h2>
           <Accordion type="multiple" defaultValue={["personal", "skills"]} className="w-full space-y-4">
             <AccordionItem value="personal">
@@ -475,9 +475,3 @@ export default function SkillBasedCvEditorPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
