@@ -40,9 +40,11 @@ export default function DashboardLayout({
                       <DropdownMenuContent align="end" className="w-56">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <User className="mr-2 h-4 w-4" />
-                          <span>Edit Profile</span>
+                        <DropdownMenuItem asChild>
+                          <Link href="/dashboard/profile">
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Edit Profile</span>
+                          </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
