@@ -17,7 +17,7 @@ export default function Home() {
       <main className="flex-1 flex items-center justify-center text-center p-4 z-10">
         <div className="flex flex-col items-center gap-6 max-w-2xl">
           <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-            Forge Your Future, One Perfect CV at a Time.
+            Small inputs in. Professional CV out.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-xl">
             Vitae Forge helps you create stunning, professional CVs tailored for students and job seekers.
