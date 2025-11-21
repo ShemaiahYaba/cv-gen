@@ -86,9 +86,9 @@ const initialData = {
     summaryInputs: {
         role: "Software Engineer",
         experience: "3+ years",
-        strength1: "building scalable web apps",
-        strength2: "optimizing database performance",
-        strength3: "leading agile teams",
+        strength1: "building scalable web applications",
+        strength2: "shipping clean frontend interfaces",
+        strength3: "leading small engineering teams to deliver high-impact features",
     },
     skills: {
         technical: "JavaScript, TypeScript, Python",
@@ -102,18 +102,18 @@ const initialData = {
             location: "San Francisco, CA",
             dates: "Jan 2022 – Present",
             bullets: [
-                "Engineered a customer-facing analytics dashboard using React and D3.js, resulting in a 25% increase in user engagement.",
-                "Optimized backend API response times by 40% by implementing advanced caching strategies with Redis.",
-                "Led a team of 3 junior developers to deliver a new real-time chat feature, reducing customer support tickets by 15%.",
+                "Built a customer-facing analytics dashboard (React + D3.js), increasing user engagement by 25%.",
+                "Improved backend API performance by 40% through Redis-based caching.",
+                "Led a team of three junior developers to deliver a real-time chat feature, reducing customer support tickets by 15%.",
             ],
         },
     ],
     projects: [
         {
             name: "AI-Powered Task Manager",
-            description: "A personal project to explore natural language processing for task prioritization.",
+            description: "Built an NLP-based system that automatically prioritizes tasks.",
             tech: "Python, TensorFlow, Flask",
-            outcome: "Successfully classified over 95% of tasks automatically based on user input."
+            outcome: "Achieved 95% classification accuracy on user-submitted inputs."
         }
     ],
     education: [
@@ -128,7 +128,7 @@ const initialData = {
             role: "President",
             organization: "University Coding Club",
             dates: "2020 – 2021",
-            impact: "Grew membership by 50% by organizing weekly workshops and a university-wide hackathon.",
+            impact: "Organized weekly workshops and a university-wide hackathon, growing club membership by 50%.",
         },
     ],
 };
@@ -184,7 +184,7 @@ export default function CustomCvEditorPage() {
     const generateSummary = () => {
         const { role, experience, strength1, strength2, strength3 } = summaryInputs;
         if (!role && !experience && !strength1) return "";
-        return `${experience} ${role} specializing in ${strength1}. Proven ability in ${strength2} and ${strength3}.`;
+        return `${role} with ${experience} experience building ${strength1}. Skilled in ${strength2} and ${strength3}.`;
     };
 
     return (
@@ -354,11 +354,11 @@ export default function CustomCvEditorPage() {
 
                 {/* --- Live CV Preview --- */}
                 <main className="overflow-y-auto p-8 lg:p-12 bg-muted/30 print:p-0">
-                    <div id="cv-preview" className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black print:shadow-none" style={{ aspectRatio: '8.5 / 11' }}>
+                    <div id="cv-preview" className="bg-white p-10 shadow-lg mx-auto max-w-4xl font-body text-black print:shadow-none" style={{ aspectRatio: '8.5 / 11' }}>
                         {/* Header */}
-                        <div className="text-center mb-8">
-                            <h1 className="text-4xl font-bold font-headline">{personal.name}</h1>
-                            <p className="text-sm text-gray-600 mt-2">
+                        <div className="text-center mb-6">
+                            <h1 className="text-3xl font-bold font-headline">{personal.name}</h1>
+                            <p className="text-xs text-gray-600 mt-1">
                                 {personal.phone} | {personal.email} | {personal.linkedin} | {personal.github}
                             </p>
                         </div>
@@ -372,9 +372,11 @@ export default function CustomCvEditorPage() {
                         {/* Skills */}
                         <div className="mb-6">
                             <h2 className="text-xs font-bold font-headline uppercase tracking-widest border-b-2 border-black pb-1 mb-2">Core Skills</h2>
-                            <p className="text-sm"><strong>Technical:</strong> {skills.technical}</p>
-                            <p className="text-sm"><strong>Tools/Frameworks:</strong> {skills.tools}</p>
-                            <p className="text-sm"><strong>Workflow:</strong> {skills.workflow}</p>
+                            <div className="text-sm flex gap-x-4">
+                                <p><strong>Languages:</strong> {skills.technical}</p>
+                                <p><strong>Frameworks/Tools:</strong> {skills.tools}</p>
+                                <p><strong>Workflow:</strong> {skills.workflow}</p>
+                            </div>
                         </div>
 
                         {/* Experience */}
@@ -383,12 +385,12 @@ export default function CustomCvEditorPage() {
                              {experiences.map((exp, i) => (
                                  <div key={i} className="mb-4">
                                      <div className="flex justify-between items-end">
-                                        <p className="text-sm"><strong>{exp.role}</strong> – {exp.company} – {exp.location}</p>
+                                        <p className="text-sm"><strong>{exp.role}</strong> — {exp.company}, {exp.location}</p>
                                         <p className="text-sm text-gray-600">{exp.dates}</p>
                                      </div>
-                                     <ul className="list-disc pl-5 mt-1 space-y-1">
+                                     <ul className="list-disc pl-5 mt-1 space-y-0.5">
                                          {exp.bullets.map((bullet, bulletIndex) => (
-                                             <li key={bulletIndex} className="text-sm">{bullet}</li>
+                                             bullet && <li key={bulletIndex} className="text-sm">{bullet}</li>
                                          ))}
                                      </ul>
                                  </div>
@@ -399,10 +401,10 @@ export default function CustomCvEditorPage() {
                         {projects.length > 0 && projects[0].name && <div className="mb-6">
                              <h2 className="text-xs font-bold font-headline uppercase tracking-widest border-b-2 border-black pb-1 mb-2">Projects</h2>
                              {projects.map((proj, i) => (
-                                <div key={i} className="mb-4">
-                                    <p className="text-sm"><strong>{proj.name}</strong> | ({proj.tech})</p>
-                                     <ul className="list-disc pl-5 mt-1 space-y-1">
-                                        <li className="text-sm">{proj.description}, {proj.outcome}</li>
+                                <div key={i} className="mb-2">
+                                    <p className="text-sm"><strong>{proj.name}</strong> — {proj.tech}</p>
+                                     <ul className="list-disc pl-5 mt-0.5 space-y-0.5">
+                                        <li className="text-sm">{proj.description} {proj.outcome}</li>
                                      </ul>
                                 </div>
                              ))}
@@ -412,7 +414,7 @@ export default function CustomCvEditorPage() {
                         <div className="mb-6">
                             <h2 className="text-xs font-bold font-headline uppercase tracking-widest border-b-2 border-black pb-1 mb-2">Education</h2>
                             {education.map((edu, i) => (
-                                <p key={i} className="text-sm"><strong>{edu.degree}</strong> – {edu.institution} – {edu.year}</p>
+                                <p key={i} className="text-sm"><strong>{edu.degree}</strong> — {edu.institution} ({edu.year})</p>
                             ))}
                         </div>
 
@@ -422,7 +424,7 @@ export default function CustomCvEditorPage() {
                              {leadership.map((item, i) => (
                                 <div key={i} className="mb-2">
                                     <p className="text-sm"><strong>{item.role},</strong> {item.organization} ({item.dates})</p>
-                                     <ul className="list-disc pl-5 mt-1 space-y-1">
+                                     <ul className="list-disc pl-5 mt-0.5 space-y-0.5">
                                          <li className="text-sm">{item.impact}</li>
                                      </ul>
                                 </div>
@@ -435,7 +437,3 @@ export default function CustomCvEditorPage() {
         </div>
     );
 }
-
-    
-
-    
