@@ -63,7 +63,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {cvs.map((cv) => (
-          <Card key={cv.id} className="flex flex-col">
+          <Card key={cv.id} className="flex flex-col relative">
              <Link href={cv.href} className="flex flex-col flex-1">
                 <CardHeader className="flex-row items-start justify-between">
                     <div>
@@ -109,5 +109,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
