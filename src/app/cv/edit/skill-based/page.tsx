@@ -12,6 +12,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { FileDown, FileText, Share2, Trash2, Save, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
@@ -184,10 +190,24 @@ export default function SkillBasedCvEditorPage() {
                 <Save className="mr-2 h-4 w-4" />
                 Save Draft
             </Button>
-            <Button size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Export
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm">
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Export as PDF</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Export as DOCX</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
         </div>
       </header>
       <div className="flex-1 grid md:grid-cols-2 overflow-hidden">
