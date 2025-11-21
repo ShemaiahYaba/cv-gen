@@ -272,7 +272,11 @@ export default function AtsCvEditorPage() {
           <div className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black" style={{ aspectRatio: '8.5 / 11'}}>
             <div className="text-sm">
                 <h1 className="text-3xl font-bold font-headline text-center">{contact.name}</h1>
-                <p className="text-center text-xs mt-2 text-gray-600">{contact.email} | {contact.phone} | {contact.address}</p>
+                <div className="text-center text-xs mt-2 text-gray-600 flex flex-col items-center">
+                    <span>{contact.email}</span>
+                    <span>{contact.phone}</span>
+                    <span>{contact.address}</span>
+                </div>
                 
                 <div className="mt-6">
                     <h2 className="text-sm font-bold font-headline border-b-2 border-black pb-1 mb-2">PROFESSIONAL SUMMARY</h2>
