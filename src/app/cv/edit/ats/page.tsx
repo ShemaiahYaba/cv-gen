@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ import Link from "next/link";
 import { Form2CVLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { getTemplateData, CvTemplate } from "@/lib/cv-templates";
 
 type ContactInfo = {
     name: string;
@@ -53,69 +55,33 @@ type Education = {
     location: string;
 }
 
-const initialData = {
-    contact: {
-        name: "John Doe",
-        email: "john.doe@email.com",
-        phone: "+1 (123) 456-7890",
-        address: "New York, USA",
-    },
-    summary: "Results-driven software engineer with 5+ years of experience in developing, testing, and maintaining web applications. Proficient in JavaScript, React, and Node.js, with a track record of delivering high-quality code and collaborating effectively in agile environments.",
-    skills: "JavaScript, React, Node.js, Python, SQL, Docker, TypeScript, AWS, CI/CD, Agile Methodologies",
-    experience: [
-        {
-            role: "Software Engineer",
-            company: "TechCorp",
-            dates: "Jan 2020 – Present",
-            location: "San Francisco, CA",
-            bullets: [
-                {
-                    text: "Developed and maintained client-side features for a high-traffic e-commerce platform using React and TypeScript, improving user engagement by 15%.",
-                    useFramework: false, action: "", method: "", result: ""
-                },
-                {
-                    text: "Collaborated with product teams to define and implement new functionalities, resulting in a 20% reduction in cart abandonment.",
-                    useFramework: false, action: "", method: "", result: ""
-                },
-                {
-                    text: "Built and consumed RESTful APIs with Node.js and Express, improving data retrieval times by 30%.",
-                    useFramework: false, action: "", method: "", result: ""
-                }
-            ]
-        },
-        {
-            role: "Junior Developer",
-            company: "Innovate LLC",
-            dates: "Jun 2018 – Dec 2019",
-            location: "Austin, TX",
-            bullets: [
-                 {
-                    text: "Assisted in the development of a customer relationship management (CRM) system using JavaScript and SQL.",
-                    useFramework: false, action: "", method: "", result: ""
-                },
-                 {
-                    text: "Fixed over 100 bugs and improved application performance by 10% through systematic code reviews and testing.",
-                    useFramework: false, action: "", method: "", result: ""
-                }
-            ]
-        }
-    ],
-    education: [
-        {
-            degree: "B.S. in Computer Science",
-            school: "University of Technology",
-            dates: "2014-2018",
-            location: "Metropolis, USA"
-        }
-    ]
-}
-
 export default function AtsCvEditorPage() {
-    const [contact, setContact] = useState<ContactInfo>(initialData.contact);
-    const [summary, setSummary] = useState<string>(initialData.summary);
-    const [skills, setSkills] = useState<string>(initialData.skills);
-    const [experiences, setExperiences] = useState<Experience[]>(initialData.experience);
-    const [educations, setEducations] = useState<Education[]>(initialData.education);
+    const searchParams = useSearchParams();
+    const templateId = searchParams.get('template');
+    
+    const [initialData, setInitialData] = useState<CvTemplate | null>(null);
+
+    const [contact, setContact] = useState<ContactInfo>({ name: '', email: '', phone: '', address: '' });
+    const [summary, setSummary] = useState<string>('');
+    const [skills, setSkills] = useState<string>('');
+    const [experiences, setExperiences] = useState<Experience[]>([]);
+    const [educations, setEducations] = useState<Education[]>([]);
+
+    useEffect(() => {
+        const data = getTemplateData(templateId || 'software-engineer-ats');
+        setInitialData(data);
+    }, [templateId]);
+    
+    useEffect(() => {
+        if (initialData) {
+            setContact(initialData.contact);
+            setSummary(initialData.summary);
+            setSkills(initialData.skills);
+            setExperiences(initialData.experience.map(exp => ({...exp, bullets: exp.bullets.map(b => ({text: b, useFramework: false, action: '', method: '', result: ''}))})));
+            setEducations(initialData.education);
+        }
+    }, [initialData])
+
 
     const handleListChange = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, index: number, field: keyof T, value: any) => {
         const updatedList = [...list];
@@ -163,6 +129,11 @@ export default function AtsCvEditorPage() {
         }
         return bullet.text;
     }
+    
+    if (!initialData) {
+        return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    }
+
 
   return (
     <div className="flex flex-col h-screen bg-background">

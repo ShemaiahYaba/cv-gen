@@ -1,0 +1,199 @@
+{
+    "ats": [
+        {
+            "id": "software-engineer-ats",
+            "contact": {
+                "name": "John Doe",
+                "email": "john.doe@email.com",
+                "phone": "+1 (123) 456-7890",
+                "address": "New York, USA"
+            },
+            "summary": "Results-driven software engineer with 5+ years of experience in developing, testing, and maintaining web applications. Proficient in JavaScript, React, and Node.js, with a track record of delivering high-quality code and collaborating effectively in agile environments.",
+            "skills": "JavaScript, React, Node.js, Python, SQL, Docker, TypeScript, AWS, CI/CD, Agile Methodologies",
+            "experience": [
+                {
+                    "role": "Software Engineer",
+                    "company": "TechCorp",
+                    "dates": "Jan 2020 – Present",
+                    "location": "San Francisco, CA",
+                    "bullets": [
+                        "Developed and maintained client-side features for a high-traffic e-commerce platform using React and TypeScript, improving user engagement by 15%.",
+                        "Collaborated with product teams to define and implement new functionalities, resulting in a 20% reduction in cart abandonment.",
+                        "Built and consumed RESTful APIs with Node.js and Express, improving data retrieval times by 30%."
+                    ]
+                },
+                {
+                    "role": "Junior Developer",
+                    "company": "Innovate LLC",
+                    "dates": "Jun 2018 – Dec 2019",
+                    "location": "Austin, TX",
+                    "bullets": [
+                        "Assisted in the development of a customer relationship management (CRM) system using JavaScript and SQL.",
+                        "Fixed over 100 bugs and improved application performance by 10% through systematic code reviews and testing."
+                    ]
+                }
+            ],
+            "education": [
+                {
+                    "degree": "B.S. in Computer Science",
+                    "school": "University of Technology",
+                    "dates": "2014-2018",
+                    "location": "Metropolis, USA"
+                }
+            ]
+        },
+        {
+            "id": "product-manager-ats",
+            "contact": {
+                "name": "Jane Smith",
+                "email": "jane.smith@email.com",
+                "phone": "+1 (987) 654-3210",
+                "address": "Seattle, WA"
+            },
+            "summary": "Product Manager with over 8 years of experience leading cross-functional teams to launch and scale products in B2B SaaS. Expert in roadmap planning, user-centric design, and data-driven decision-making to achieve business goals and enhance user satisfaction.",
+            "skills": "Product Roadmapping, Agile Methodologies, Scrum, JIRA, Confluence, User Research, A/B Testing, Market Analysis, Competitive Analysis, Go-to-Market Strategy",
+            "experience": [
+                {
+                    "role": "Senior Product Manager",
+                    "company": "SaaS Solutions",
+                    "dates": "May 2019 – Present",
+                    "location": "Seattle, WA",
+                    "bullets": [
+                        "Drove product strategy and roadmap for a flagship analytics platform, resulting in a 40% year-over-year revenue growth.",
+                        "Led a team of 5 engineers and 2 designers to launch a new mobile-first dashboard, increasing monthly active users by 25%.",
+                        "Defined and analyzed key metrics to guide product development, leading to a 30% improvement in user retention."
+                    ]
+                },
+                {
+                    "role": "Product Manager",
+                    "company": "Innovate Inc.",
+                    "dates": "July 2016 – Apr 2019",
+                    "location": "Portland, OR",
+                    "bullets": [
+                        "Managed the entire product lifecycle for a new integration marketplace, from ideation to launch, onboarding 50+ partners in the first year.",
+                        "Conducted 100+ user interviews and surveys to identify pain points and opportunities, shaping the v2 product direction.",
+                        "Collaborated with marketing to develop a go-to-market strategy that exceeded lead generation targets by 20%."
+                    ]
+                }
+            ],
+            "education": [
+                {
+                    "degree": "MBA, Technology Management",
+                    "school": "University of Washington",
+                    "dates": "2014-2016",
+                    "location": "Seattle, WA"
+                },
+                {
+                    "degree": "B.A. in Business Administration",
+                    "school": "Oregon State University",
+                    "dates": "2010-2014",
+                    "location": "Corvallis, OR"
+                }
+            ]
+        }
+    ],
+    "skillBased": [
+        {
+            "id": "student-skill-based",
+            "personal": {
+                "fullName": "Jane Doe",
+                "email": "jane.doe@example.com",
+                "phone": "+1 234 567 890",
+                "linkedin": "linkedin.com/in/janedoe",
+                "github": "github.com/janedoe"
+            },
+            "summary": "A passionate computer science student with a strong foundation in software development and a keen interest in AI and machine learning. Seeking opportunities to apply my skills to real-world challenges.",
+            "skills": {
+                "technical": "Python, JavaScript, React, Node.js, PostgreSQL",
+                "soft": "Teamwork, Communication, Problem-Solving, Leadership"
+            },
+            "projects": [
+                {
+                    "name": "Academic Repository",
+                    "role": "Lead Developer",
+                    "tools": "Python, PostgreSQL, Flask",
+                    "impact": "Enabled 50+ students to access lecture notes online, reducing search time by 40%."
+                }
+            ],
+            "education": [
+                {
+                    "degree": "B.S. in Computer Science",
+                    "school": "University of Technology",
+                    "year": "2024",
+                    "honors": "GPA: 3.8/4.0, Dean's List"
+                }
+            ],
+            "leadership": [
+                {
+                    "role": "President",
+                    "organization": "Coding Club",
+                    "timeframe": "2022-2023",
+                    "contribution": "Organized weekly meetings and workshops for 50+ members."
+                }
+            ],
+            "certifications": [
+                {
+                    "name": "Certified Python Developer",
+                    "issuer": "Python Institute",
+                    "year": "2022"
+                }
+            ]
+        },
+        {
+            "id": "ai-ml-intern-skill-based",
+            "personal": {
+                "fullName": "Alex Ray",
+                "email": "alex.ray@example.com",
+                "phone": "+1 555 123 4567",
+                "linkedin": "linkedin.com/in/alexray-ai",
+                "github": "github.com/alexray-ai"
+            },
+            "summary": "An analytical and driven student pursuing a Master's in Artificial Intelligence, with hands-on project experience in machine learning, deep learning, and natural language processing. Eager to contribute to innovative AI research and development.",
+            "skills": {
+                "technical": "Python, TensorFlow, PyTorch, Scikit-learn, Pandas, SQL",
+                "soft": "Analytical Thinking, Research, Collaboration, Technical Writing"
+            },
+            "projects": [
+                {
+                    "name": "Sentiment Analysis Model",
+                    "role": "ML Researcher",
+                    "tools": "Python, NLTK, Scikit-learn",
+                    "impact": "Developed a model to classify movie reviews with 92% accuracy, outperforming baseline models by 15%."
+                },
+                {
+                    "name": "Image Recognition for Flora",
+                    "role": "Deep Learning Developer",
+                    "tools": "TensorFlow, Keras, CNNs",
+                    "impact": "Trained a convolutional neural network to identify 50 different plant species from images with 95% validation accuracy."
+                }
+            ],
+            "education": [
+                {
+                    "degree": "M.S. in Artificial Intelligence",
+                    "school": "Carnegie Mellon University",
+                    "year": "2025 (Expected)",
+                    "honors": "Relevant Coursework: Deep Learning, NLP, Computer Vision"
+                },
+                {
+                    "degree": "B.S. in Data Science",
+                    "school": "University of California, Berkeley",
+                    "year": "2023",
+                    "honors": "Summa Cum Laude, GPA: 3.9/4.0"
+                }
+            ],
+            "leadership": [],
+            "certifications": [
+                {
+                    "name": "Deep Learning Specialization",
+                    "issuer": "Coursera (deeplearning.ai)",
+                    "year": "2023"
+                },
+                {
+                    "name": "TensorFlow Developer Certificate",
+                    "issuer": "Google",
+                    "year": "2023"
+                }
+            ]
+        }
+    ]
+}

@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,8 @@ import Link from "next/link";
 import { Form2CVLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { getSkillBasedTemplateData, SkillBasedCvTemplate } from "@/lib/cv-templates";
+
 
 // Type definitions for structured CV data
 type Project = {
@@ -62,73 +65,36 @@ type Certification = {
     year: string;
 }
 
-// Initial state with structured data
-const initialCvData = {
-  personal: {
-    fullName: "Jane Doe",
-    email: "jane.doe@example.com",
-    phone: "+1 234 567 890",
-    linkedin: "linkedin.com/in/janedoe",
-    github: "github.com/janedoe",
-  },
-  summary:
-    "A passionate computer science student with a strong foundation in software development and a keen interest in AI and machine learning. Seeking opportunities to apply my skills to real-world challenges.",
-  skills: {
-    technical: "Python, JavaScript, React, Node.js, PostgreSQL",
-    soft: "Teamwork, Communication, Problem-Solving, Leadership",
-  },
-  projects: [
-    {
-      name: "Academic Repository",
-      role: "Lead Developer",
-      tools: "Python, PostgreSQL, Flask",
-      impact: "Enabled 50+ students to access lecture notes online, reducing search time by 40%.",
-      useStar: false,
-      situation: "",
-      task: "",
-      action: "",
-      result: ""
-    },
-  ],
-  education: [
-    {
-      degree: "B.S. in Computer Science",
-      school: "University of Technology",
-      year: "2024",
-      honors: "GPA: 3.8/4.0, Dean's List",
-    },
-  ],
-  leadership: [
-    {
-      role: "President",
-      organization: "Coding Club",
-      timeframe: "2022-2023",
-      contribution: "Organized weekly meetings and workshops for 50+ members.",
-      useStar: false,
-      situation: "",
-      task: "",
-      action: "",
-      result: ""
-    },
-  ],
-  certifications: [
-    {
-      name: "Certified Python Developer",
-      issuer: "Python Institute",
-      year: "2022",
-    },
-  ],
-};
-
-
 export default function SkillBasedCvEditorPage() {
-    const [personal, setPersonal] = useState(initialCvData.personal);
-    const [summary, setSummary] = useState(initialCvData.summary);
-    const [skills, setSkills] = useState(initialCvData.skills);
-    const [projects, setProjects] = useState<Project[]>(initialCvData.projects);
-    const [education, setEducation] = useState<Education[]>(initialCvData.education);
-    const [leadership, setLeadership] = useState<Leadership[]>(initialCvData.leadership);
-    const [certifications, setCertifications] = useState<Certification[]>(initialCvData.certifications);
+    const searchParams = useSearchParams();
+    const templateId = searchParams.get('template');
+    
+    const [initialData, setInitialData] = useState<SkillBasedCvTemplate | null>(null);
+
+    const [personal, setPersonal] = useState({ fullName: "", email: "", phone: "", linkedin: "", github: "" });
+    const [summary, setSummary] = useState("");
+    const [skills, setSkills] = useState({ technical: "", soft: "" });
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [education, setEducation] = useState<Education[]>([]);
+    const [leadership, setLeadership] = useState<Leadership[]>([]);
+    const [certifications, setCertifications] = useState<Certification[]>([]);
+
+     useEffect(() => {
+        const data = getSkillBasedTemplateData(templateId || 'student-skill-based');
+        setInitialData(data);
+    }, [templateId]);
+
+    useEffect(() => {
+        if (initialData) {
+            setPersonal(initialData.personal);
+            setSummary(initialData.summary);
+            setSkills(initialData.skills);
+            setProjects(initialData.projects.map(p => ({...p, useStar: false, situation: '', task: '', action: '', result: ''})));
+            setEducation(initialData.education);
+            setLeadership(initialData.leadership.map(l => ({...l, useStar: false, situation: '', task: '', action: '', result: ''})));
+            setCertifications(initialData.certifications);
+        }
+    }, [initialData])
 
     const handleListChange = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, index: number, field: keyof T, value: string | boolean) => {
         const updatedList = [...list];
@@ -167,6 +133,11 @@ export default function SkillBasedCvEditorPage() {
       }
       return item.contribution;
     }
+    
+    if (!initialData) {
+        return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    }
+
 
   return (
     <div className="flex flex-col h-screen bg-background">

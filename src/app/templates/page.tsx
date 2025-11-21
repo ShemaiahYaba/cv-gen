@@ -11,13 +11,13 @@ import { ArrowLeft, Bot, Code, PenSquare, Star, Target } from "lucide-react";
 
 const templates = [
   {
-    href: "/cv/edit/ats",
+    href: "/cv/edit/ats?template=software-engineer-ats",
     icon: <Code className="h-6 w-6" />,
     title: "Software Engineer (ATS)",
     description: "An ATS-optimized template for experienced software engineers.",
   },
   {
-    href: "/cv/edit/skill-based",
+    href: "/cv/edit/skill-based?template=student-skill-based",
     icon: <Star className="h-6 w-6" />,
     title: "Student (Skill-Based)",
     description: "Highlight your skills and projects for internships and first jobs.",
@@ -29,13 +29,13 @@ const templates = [
     description: "A flexible template for roles that value unique presentation.",
   },
   {
-    href: "/cv/edit/ats",
+    href: "/cv/edit/ats?template=product-manager-ats",
     icon: <Target className="h-6 w-6" />,
     title: "Product Manager (ATS)",
     description: "An ATS-friendly template focused on impact and metrics.",
   },
   {
-    href: "/cv/edit/skill-based",
+    href: "/cv/edit/skill-based?template=ai-ml-intern-skill-based",
     icon: <Bot className="h-6 w-6" />,
     title: "AI/ML Intern (Skill-Based)",
     description: "Showcase your AI projects and technical skills for research roles.",
