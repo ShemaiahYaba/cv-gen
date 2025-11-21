@@ -1,12 +1,10 @@
 "use client"
 import Link from "next/link"
 import {
-  PlusCircle,
   User,
   LogOut,
 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { VitaeForgeLogo } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -24,11 +22,6 @@ export default function DashboardLayout({
                     <span className="font-headline text-lg font-semibold">Vitae Forge</span>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <Button asChild>
-                        <Link href="/onboarding">
-                            <PlusCircle className="mr-2"/> Create New
-                        </Link>
-                    </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <div className="flex items-center gap-3 cursor-pointer">
