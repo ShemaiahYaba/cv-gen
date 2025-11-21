@@ -5,7 +5,7 @@ import {
   LogOut,
 } from "lucide-react"
 
-import { VitaeForgeLogo } from "@/components/icons"
+import { Form2CVLogo } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -20,8 +20,8 @@ export default function DashboardLayout({
       <div className="flex flex-col min-h-screen">
             <header className="flex h-16 items-center justify-between gap-4 border-b bg-card px-6">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <VitaeForgeLogo className="size-7 text-primary" />
-                    <span className="font-headline text-lg font-semibold">Vitae Forge</span>
+                    <Form2CVLogo className="size-7 text-primary" />
+                    <span className="font-headline text-lg font-semibold">Form2CV</span>
                 </Link>
                 <div className="flex items-center gap-4">
                     <DropdownMenu>

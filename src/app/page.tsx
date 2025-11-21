@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AnimatedShapes } from '@/components/landing/AnimatedShapes';
-import { VitaeForgeLogo } from '@/components/icons';
+import { Form2CVLogo } from '@/components/icons';
 import { ArrowRight, LogIn, LogOut } from 'lucide-react';
 
 export default function Home() {
@@ -9,8 +9,8 @@ export default function Home() {
     <div className="relative flex flex-col min-h-screen w-full overflow-hidden">
       <header className="absolute top-0 left-0 w-full p-4 sm:p-6 z-10">
         <div className="flex items-center gap-2">
-          <VitaeForgeLogo className="h-8 w-8 text-primary" />
-          <span className="font-headline text-xl font-bold">Vitae Forge</span>
+          <Form2CVLogo className="h-8 w-8 text-primary" />
+          <span className="font-headline text-xl font-bold">Form2CV</span>
         </div>
       </header>
 
@@ -22,7 +22,7 @@ export default function Home() {
             Professional CV <LogOut className="inline-block h-12 w-12 text-primary" /> out.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-xl">
-            Vitae Forge helps you create stunning, professional CVs tailored for students and job seekers.
+            Form2CV helps you create stunning, professional CVs tailored for students and job seekers.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Button asChild size="lg" className="font-semibold">
@@ -43,7 +43,7 @@ export default function Home() {
       <AnimatedShapes />
 
       <footer className="w-full p-4 sm:p-6 text-center text-sm text-muted-foreground z-10">
-        © {new Date().getFullYear()} Vitae Forge. All rights reserved.
+        © {new Date().getFullYear()} Form2CV. All rights reserved.
       </footer>
     </div>
   );

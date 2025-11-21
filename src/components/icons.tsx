@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-export function VitaeForgeLogo(props: SVGProps<SVGSVGElement>) {
+export function Form2CVLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

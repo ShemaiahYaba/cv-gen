@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Vitae Forge',
+  title: 'Form2CV',
   description: 'Generate your professional CV with ease.',
 };
 

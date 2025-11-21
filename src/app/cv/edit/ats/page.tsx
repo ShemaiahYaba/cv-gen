@@ -19,7 +19,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { FileDown, FileText, Trash2, Save, LayoutDashboard, Printer, FileImage } from "lucide-react";
 import Link from "next/link";
-import { VitaeForgeLogo } from "@/components/icons";
+import { Form2CVLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
@@ -169,8 +169,8 @@ export default function AtsCvEditorPage() {
       <header className="flex h-16 items-center justify-between border-b bg-card px-4 md:px-6 shrink-0">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <VitaeForgeLogo className="h-6 w-6" />
-            <span className="font-headline font-semibold hidden sm:inline">Vitae Forge</span>
+            <Form2CVLogo className="h-6 w-6" />
+            <span className="font-headline font-semibold hidden sm:inline">Form2CV</span>
           </Link>
           <span className="text-muted-foreground hidden sm:inline">/</span>
           <span className="font-semibold">ATS Editor</span>

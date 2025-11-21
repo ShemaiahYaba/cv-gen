@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { VitaeForgeLogo } from "@/components/icons";
+import { Form2CVLogo } from "@/components/icons";
 
 export default function SignUpPage() {
   return (
@@ -17,8 +17,8 @@ export default function SignUpPage() {
       <Card className="mx-auto max-w-sm">
         <CardHeader className="text-center">
            <div className="flex justify-center items-center gap-2 mb-4">
-            <VitaeForgeLogo className="h-8 w-8 text-primary" />
-            <CardTitle className="font-headline text-3xl">Vitae Forge</CardTitle>
+            <Form2CVLogo className="h-8 w-8 text-primary" />
+            <CardTitle className="font-headline text-3xl">Form2CV</CardTitle>
           </div>
           <CardDescription>
             Enter your information to create an account
