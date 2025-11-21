@@ -24,18 +24,21 @@ const cvs = [
     title: "Software Engineer @ Google",
     type: "ATS",
     lastModified: "2 days ago",
+    href: "/cv/edit/ats",
   },
   {
     id: "2",
     title: "Academic CV for Scholarship",
     type: "Skill-Based",
     lastModified: "5 days ago",
+    href: "/cv/edit/skill-based",
   },
   {
     id: "3",
     title: "Creative Portfolio Intro",
     type: "Custom",
     lastModified: "1 week ago",
+    href: "/cv/edit/custom",
   },
 ];
 
@@ -61,44 +64,50 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {cvs.map((cv) => (
           <Card key={cv.id} className="flex flex-col">
-            <CardHeader className="flex-row items-start justify-between">
-                <div>
-                    <CardTitle className="mb-1">{cv.title}</CardTitle>
-                    <CardDescription>{cv.type} CV</CardDescription>
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
+             <Link href={cv.href} className="flex flex-col flex-1">
+                <CardHeader className="flex-row items-start justify-between">
+                    <div>
+                        <CardTitle className="mb-1">{cv.title}</CardTitle>
+                        <CardDescription>{cv.type} CV</CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent className="flex-1 flex items-center justify-center bg-muted/50 p-4">
+                  {cvThumbnail && (
+                    <Image
+                      src={cvThumbnail.imageUrl}
+                      alt={cvThumbnail.description}
+                      width={200}
+                      height={283}
+                      data-ai-hint={cvThumbnail.imageHint}
+                      className="rounded-md shadow-lg"
+                    />
+                  )}
+                </CardContent>
+                <CardFooter>
+                  <p className="text-xs text-muted-foreground">
+                    Last modified: {cv.lastModified}
+                  </p>
+                </CardFooter>
+             </Link>
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-8 w-8">
+                    <MoreHorizontal className="h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem><Pencil className="mr-2 h-4 w-4"/>Edit</DropdownMenuItem>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                        <Link href={cv.href}><Pencil className="mr-2 h-4 w-4"/>Edit</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem><FileDown className="mr-2 h-4 w-4"/>Download</DropdownMenuItem>
                     <DropdownMenuItem className="text-destructive focus:text-destructive"><Trash2 className="mr-2 h-4 w-4"/>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
+                </DropdownMenuContent>
                 </DropdownMenu>
-            </CardHeader>
-            <CardContent className="flex-1 flex items-center justify-center bg-muted/50 p-4">
-              {cvThumbnail && (
-                <Image
-                  src={cvThumbnail.imageUrl}
-                  alt={cvThumbnail.description}
-                  width={200}
-                  height={283}
-                  data-ai-hint={cvThumbnail.imageHint}
-                  className="rounded-md shadow-lg"
-                />
-              )}
-            </CardContent>
-            <CardFooter>
-              <p className="text-xs text-muted-foreground">
-                Last modified: {cv.lastModified}
-              </p>
-            </CardFooter>
           </Card>
         ))}
       </div>
     </div>
   );
 }
+
+    
