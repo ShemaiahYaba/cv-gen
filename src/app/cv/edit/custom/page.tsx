@@ -241,11 +241,7 @@ export default function CustomCvEditorPage() {
                 {/* --- Micro-Inputs Panel --- */}
                 <aside className="overflow-y-auto p-6 md:p-8 border-r">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-headline font-bold">CV Micro-Inputs</h2>
-                        <Button variant="outline" size="sm" disabled>
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            AI Suggestions
-                        </Button>
+                        <h2 className="text-2xl font-headline font-bold">Edit Content</h2>
                     </div>
                     <Accordion type="multiple" defaultValue={["personal", "experience"]} className="w-full space-y-4">
                         <AccordionItem value="personal">
@@ -439,5 +435,7 @@ export default function CustomCvEditorPage() {
         </div>
     );
 }
+
+    
 
     
