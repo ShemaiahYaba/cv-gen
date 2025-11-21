@@ -1,22 +1,20 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "@/components/ui/card";
-import { PlusCircle, MoreHorizontal, FileDown, Pencil, Trash2, LayoutGrid } from "lucide-react";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { PlusCircle, MoreHorizontal, FileDown, Pencil, Trash2, LayoutGrid, FileText } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge";
 
 const cvs = [
   {
@@ -43,8 +41,6 @@ const cvs = [
 ];
 
 export default function DashboardPage() {
-  const cvThumbnail = PlaceHolderImages.find((img) => img.id === "cv-thumbnail");
-
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
@@ -70,46 +66,39 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {cvs.map((cv) => (
-          <Card key={cv.id} className="flex flex-col relative">
-             <Link href={cv.href} className="flex flex-col flex-1">
-                <CardHeader className="flex-row items-start justify-between">
-                    <div>
-                        <CardTitle className="mb-1">{cv.title}</CardTitle>
-                        <CardDescription>{cv.type} CV</CardDescription>
+          <Card key={cv.id} className="group flex flex-col justify-between">
+            <CardHeader>
+                <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                         <div className="bg-muted p-3 rounded-md">
+                            <FileText className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                        <div>
+                            <CardTitle className="mb-1 text-lg group-hover:text-primary transition-colors">
+                                 <Link href={cv.href}>{cv.title}</Link>
+                            </CardTitle>
+                            <CardDescription>Last modified: {cv.lastModified}</CardDescription>
+                        </div>
                     </div>
-                </CardHeader>
-                <CardContent className="flex-1 flex items-center justify-center bg-muted/50 p-4">
-                  {cvThumbnail && (
-                    <Image
-                      src={cvThumbnail.imageUrl}
-                      alt={cvThumbnail.description}
-                      width={200}
-                      height={283}
-                      data-ai-hint={cvThumbnail.imageHint}
-                      className="rounded-md shadow-lg"
-                    />
-                  )}
-                </CardContent>
-                <CardFooter>
-                  <p className="text-xs text-muted-foreground">
-                    Last modified: {cv.lastModified}
-                  </p>
-                </CardFooter>
-             </Link>
-             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                        <Link href={cv.href}><Pencil className="mr-2 h-4 w-4"/>Edit</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem><FileDown className="mr-2 h-4 w-4"/>Download</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive focus:text-destructive"><Trash2 className="mr-2 h-4 w-4"/>Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-                </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                                <Link href={cv.href}><Pencil className="mr-2 h-4 w-4"/>Edit</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem><FileDown className="mr-2 h-4 w-4"/>Download</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive"><Trash2 className="mr-2 h-4 w-4"/>Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </CardHeader>
+            <CardFooter>
+                 <Badge variant="outline">{cv.type} CV</Badge>
+            </CardFooter>
           </Card>
         ))}
       </div>
