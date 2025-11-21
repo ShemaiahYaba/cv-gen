@@ -30,6 +30,12 @@ export default function DashboardLayout({
                             Log out
                         </Link>
                     </Button>
+                     <Link href="/dashboard/profile">
+                        <Avatar>
+                            <AvatarImage src="https://picsum.photos/seed/1/40/40" />
+                            <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                    </Link>
                 </div>
             </header>
             <main className="flex-1 flex-col bg-background p-4 md:p-8">
