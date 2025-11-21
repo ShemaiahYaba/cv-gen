@@ -11,25 +11,113 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FileDown, FileText, Save, Share2 } from "lucide-react";
+import { FileDown, FileText, Share2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
 
-export default function AtsCvEditorPage() {
-    const [cvData, setCvData] = useState({
+type ContactInfo = {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+}
+
+type Experience = {
+    role: string;
+    company: string;
+    dates: string;
+    location: string;
+    bullets: string[];
+}
+
+type Education = {
+    degree: string;
+    school: string;
+    dates: string;
+    location: string;
+}
+
+const initialData = {
+    contact: {
         name: "John Doe",
         email: "john.doe@email.com",
         phone: "+1 (123) 456-7890",
         address: "New York, USA",
-        summary: "Results-driven software engineer with 5+ years of experience in developing, testing, and maintaining web applications. Proficient in JavaScript, React, and Node.js.",
-        experience: "Software Engineer at TechCorp (2020-Present)\n- Developed and maintained client-side features using React.\n- Collaborated with product teams to define and implement new functionalities.",
-        education: "B.S. in Computer Science, University of Technology (2016-2020)",
-        skills: "JavaScript, React, Node.js, Python, SQL, Docker",
-    });
+    },
+    summary: "Results-driven software engineer with 5+ years of experience in developing, testing, and maintaining web applications. Proficient in JavaScript, React, and Node.js, with a track record of delivering high-quality code and collaborating effectively in agile environments.",
+    skills: "JavaScript, React, Node.js, Python, SQL, Docker, TypeScript, AWS, CI/CD, Agile Methodologies",
+    experience: [
+        {
+            role: "Software Engineer",
+            company: "TechCorp",
+            dates: "Jan 2020 – Present",
+            location: "San Francisco, CA",
+            bullets: [
+                "Developed and maintained client-side features for a high-traffic e-commerce platform using React and TypeScript, improving user engagement by 15%.",
+                "Collaborated with product teams to define and implement new functionalities, resulting in a 20% reduction in cart abandonment.",
+                "Built and consumed RESTful APIs with Node.js and Express, improving data retrieval times by 30%.",
+            ]
+        },
+        {
+            role: "Junior Developer",
+            company: "Innovate LLC",
+            dates: "Jun 2018 – Dec 2019",
+            location: "Austin, TX",
+            bullets: [
+                "Assisted in the development of a customer relationship management (CRM) system using JavaScript and SQL.",
+                "Fixed over 100 bugs and improved application performance by 10% through systematic code reviews and testing.",
+            ]
+        }
+    ],
+    education: [
+        {
+            degree: "B.S. in Computer Science",
+            school: "University of Technology",
+            dates: "2014-2018",
+            location: "Metropolis, USA"
+        }
+    ]
+}
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setCvData(prev => ({...prev, [name]: value}));
+export default function AtsCvEditorPage() {
+    const [contact, setContact] = useState<ContactInfo>(initialData.contact);
+    const [summary, setSummary] = useState<string>(initialData.summary);
+    const [skills, setSkills] = useState<string>(initialData.skills);
+    const [experiences, setExperiences] = useState<Experience[]>(initialData.experience);
+    const [educations, setEducations] = useState<Education[]>(initialData.education);
+
+    const handleListChange = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, index: number, field: keyof T, value: any) => {
+        const updatedList = [...list];
+        updatedList[index] = {...updatedList[index], [field]: value };
+        setList(updatedList);
+    };
+
+    const handleBulletChange = (expIndex: number, bulletIndex: number, value: string) => {
+        const updatedExperiences = [...experiences];
+        updatedExperiences[expIndex].bullets[bulletIndex] = value;
+        setExperiences(updatedExperiences);
+    };
+    
+    const addListItem = <T,>(setList: React.Dispatch<React.SetStateAction<T[]>>, newItem: T) => {
+        setList(prev => [...prev, newItem]);
+    };
+
+    const removeListItem = <T,>(setList: React.Dispatch<React.SetStateAction<T[]>>, index: number) => {
+        setList(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const addBullet = (expIndex: number) => {
+        const updatedExperiences = [...experiences];
+        if (updatedExperiences[expIndex].bullets.length < 5) {
+             updatedExperiences[expIndex].bullets.push('');
+            setExperiences(updatedExperiences);
+        }
+    }
+
+    const removeBullet = (expIndex: number, bulletIndex: number) => {
+        const updatedExperiences = [...experiences];
+        updatedExperiences[expIndex].bullets = updatedExperiences[expIndex].bullets.filter((_, i) => i !== bulletIndex);
+        setExperiences(updatedExperiences);
     }
 
   return (
@@ -56,85 +144,180 @@ export default function AtsCvEditorPage() {
         </div>
       </header>
       <div className="flex-1 grid md:grid-cols-2 overflow-hidden">
-        <aside className="overflow-y-auto p-6 border-r">
+        <aside className="overflow-y-auto p-6 md:p-8 border-r">
           <h2 className="text-2xl font-headline font-bold mb-6">Edit Content</h2>
-          <Accordion type="multiple" defaultValue={["personal", "summary"]} className="w-full">
-            <AccordionItem value="personal">
-              <AccordionTrigger>Personal Details</AccordionTrigger>
-              <AccordionContent className="space-y-4">
+          <Accordion type="multiple" defaultValue={["contact", "experience"]} className="w-full space-y-4">
+            <AccordionItem value="contact">
+              <AccordionTrigger>Contact Information</AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" name="name" value={cvData.name} onChange={handleChange} />
+                  <Input id="name" name="name" value={contact.name} onChange={(e) => setContact(c => ({...c, name: e.target.value}))} />
+                </div>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" value={contact.email} onChange={(e) => setContact(c => ({...c, email: e.target.value}))} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="phone">Phone</Label>
+                        <Input id="phone" name="phone" value={contact.phone} onChange={(e) => setContact(c => ({...c, phone: e.target.value}))} />
+                    </div>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" value={cvData.email} onChange={handleChange} />
-                </div>
-                 <div className="grid gap-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" name="phone" value={cvData.phone} onChange={handleChange} />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input id="address" name="address" value={cvData.address} onChange={handleChange} />
+                  <Label htmlFor="address">Address (City, State)</Label>
+                  <Input id="address" name="address" value={contact.address} onChange={(e) => setContact(c => ({...c, address: e.target.value}))} />
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="summary">
               <AccordionTrigger>Professional Summary</AccordionTrigger>
-              <AccordionContent>
-                <Textarea placeholder="Tell us about yourself" name="summary" value={cvData.summary} onChange={handleChange} rows={5} />
+              <AccordionContent className="pt-4">
+                <Textarea placeholder="A 2-3 line summary of your skills and career focus." name="summary" value={summary} onChange={e => setSummary(e.target.value)} rows={4} />
+              </AccordionContent>
+            </AccordionItem>
+             <AccordionItem value="skills">
+              <AccordionTrigger>Skills / Core Competencies</AccordionTrigger>
+              <AccordionContent className="pt-4">
+                 <Textarea placeholder="Comma-separated skills (e.g. Skill 1, Skill 2, Skill 3)" name="skills" value={skills} onChange={e => setSkills(e.target.value)} rows={3} />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="experience">
-              <AccordionTrigger>Work Experience</AccordionTrigger>
-              <AccordionContent>
-                <Textarea placeholder="Your work experience" name="experience" value={cvData.experience} onChange={handleChange} rows={8} />
+              <AccordionTrigger>Experience & Projects</AccordionTrigger>
+              <AccordionContent className="space-y-6 pt-4">
+                {experiences.map((exp, expIndex) => (
+                  <div key={expIndex} className="space-y-4 p-4 border rounded-md relative">
+                    <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeListItem(setExperiences, expIndex)}>
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label>Role / Project Name</Label>
+                            <Input value={exp.role} onChange={e => handleListChange(experiences, setExperiences, expIndex, 'role', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Company / Context</Label>
+                            <Input value={exp.company} onChange={e => handleListChange(experiences, setExperiences, expIndex, 'company', e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label>Dates (e.g., Jan 2024 – Present)</Label>
+                            <Input value={exp.dates} onChange={e => handleListChange(experiences, setExperiences, expIndex, 'dates', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Location (Optional)</Label>
+                            <Input value={exp.location} onChange={e => handleListChange(experiences, setExperiences, expIndex, 'location', e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label>Achievements / Bullets (Max 5)</Label>
+                        {exp.bullets.map((bullet, bulletIndex) => (
+                            <div key={bulletIndex} className="flex items-center gap-2">
+                                <Textarea 
+                                    value={bullet}
+                                    onChange={e => handleBulletChange(expIndex, bulletIndex, e.target.value)}
+                                    rows={2}
+                                    placeholder={`Action verb -> what you built/solved -> outcome (max 22 words)`}
+                                />
+                                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => removeBullet(expIndex, bulletIndex)}>
+                                    <Trash2 className="w-4 h-4 text-destructive" />
+                                </Button>
+                            </div>
+                        ))}
+                         {exp.bullets.length < 5 && <Button variant="outline" size="sm" onClick={() => addBullet(expIndex)}>Add Bullet</Button>}
+                    </div>
+                  </div>
+                ))}
+                <Button variant="outline" onClick={() => addListItem(setExperiences, {role: '', company: '', dates: '', location: '', bullets: ['']})}>Add Experience/Project</Button>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="education">
               <AccordionTrigger>Education</AccordionTrigger>
-              <AccordionContent>
-                 <Textarea placeholder="Your education" name="education" value={cvData.education} onChange={handleChange} rows={4} />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="skills">
-              <AccordionTrigger>Skills</AccordionTrigger>
-              <AccordionContent>
-                 <Textarea placeholder="Comma-separated skills" name="skills" value={cvData.skills} onChange={handleChange} rows={3} />
+              <AccordionContent className="space-y-6 pt-4">
+                 {educations.map((edu, i) => (
+                    <div key={i} className="space-y-4 p-4 border rounded-md relative">
+                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeListItem(setEducations, i)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label>Degree / Program</Label>
+                                <Input value={edu.degree} onChange={e => handleListChange(educations, setEducations, i, 'degree', e.target.value)} />
+                            </div>
+                             <div className="grid gap-2">
+                                <Label>School / University</Label>
+                                <Input value={edu.school} onChange={e => handleListChange(educations, setEducations, i, 'school', e.target.value)} />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                           <div className="grid gap-2">
+                              <Label>Dates</Label>
+                              <Input value={edu.dates} onChange={e => handleListChange(educations, setEducations, i, 'dates', e.target.value)} />
+                           </div>
+                           <div className="grid gap-2">
+                              <Label>Location</Label>
+                              <Input value={edu.location} onChange={e => handleListChange(educations, setEducations, i, 'location', e.target.value)} />
+                           </div>
+                        </div>
+                    </div>
+                ))}
+                 <Button variant="outline" onClick={() => addListItem(setEducations, {degree: '', school: '', dates: '', location: ''})}>Add Education</Button>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
         </aside>
         
         <main className="overflow-y-auto p-8 lg:p-12 bg-muted/30">
-          <div className="bg-white p-12 shadow-lg mx-auto max-w-4xl" style={{ aspectRatio: '8.5 / 11'}}>
-            <div className="font-body text-black">
-                <h1 className="text-4xl font-bold font-headline border-b-2 pb-2 mb-4">{cvData.name}</h1>
-                <div className="flex justify-center text-sm mb-6 space-x-4">
-                    <span>{cvData.email}</span>
-                    <span>{cvData.phone}</span>
-                    <span>{cvData.address}</span>
+          <div className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black" style={{ aspectRatio: '8.5 / 11'}}>
+            <div className="text-sm">
+                <h1 className="text-3xl font-bold font-headline text-center">{contact.name}</h1>
+                <p className="text-center text-xs mt-2 text-gray-600">{contact.email} | {contact.phone} | {contact.address}</p>
+                
+                <div className="mt-6">
+                    <h2 className="text-sm font-bold font-headline border-b-2 border-black pb-1 mb-2">PROFESSIONAL SUMMARY</h2>
+                    <p className="text-xs">{summary}</p>
                 </div>
                 
-                <div className="mb-6">
-                    <h2 className="text-lg font-bold font-headline border-b pb-1 mb-2">PROFESSIONAL SUMMARY</h2>
-                    <p className="text-sm whitespace-pre-wrap">{cvData.summary}</p>
-                </div>
-                
-                <div className="mb-6">
-                    <h2 className="text-lg font-bold font-headline border-b pb-1 mb-2">WORK EXPERIENCE</h2>
-                    <p className="text-sm whitespace-pre-wrap">{cvData.experience}</p>
+                 <div className="mt-6">
+                    <h2 className="text-sm font-bold font-headline border-b-2 border-black pb-1 mb-2">SKILLS / CORE COMPETENCIES</h2>
+                    <p className="text-xs">{skills.split(',').map(s => s.trim()).join(' · ')}</p>
                 </div>
 
-                <div className="mb-6">
-                    <h2 className="text-lg font-bold font-headline border-b pb-1 mb-2">EDUCATION</h2>
-                    <p className="text-sm whitespace-pre-wrap">{cvData.education}</p>
+                <div className="mt-6">
+                    <h2 className="text-sm font-bold font-headline border-b-2 border-black pb-1 mb-2">EXPERIENCE & PROJECTS</h2>
+                    {experiences.map((exp, i) => (
+                        <div key={i} className="mb-4">
+                            <div className="flex justify-between items-start">
+                                <p className="font-bold">{exp.role} | {exp.company}</p>
+                                <p className="font-bold text-right">{exp.dates}</p>
+                            </div>
+                            <div className="flex justify-between items-start">
+                                <p className="italic text-gray-600">{exp.location}</p>
+                            </div>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                {exp.bullets.map((bullet, bulletIndex) => (
+                                    <li key={bulletIndex} className="text-xs">{bullet}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
 
-                <div>
-                    <h2 className="text-lg font-bold font-headline border-b pb-1 mb-2">SKILLS</h2>
-                    <p className="text-sm">{cvData.skills}</p>
+                <div className="mt-6">
+                    <h2 className="text-sm font-bold font-headline border-b-2 border-black pb-1 mb-2">EDUCATION</h2>
+                    {educations.map((edu, i) => (
+                         <div key={i} className="mb-2">
+                             <div className="flex justify-between items-start">
+                                <p className="font-bold">{edu.degree}</p>
+                                <p className="text-right">{edu.dates}</p>
+                            </div>
+                            <div className="flex justify-between items-start">
+                                <p className="italic text-gray-600">{edu.school}</p>
+                                <p className="italic text-gray-600 text-right">{edu.location}</p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
           </div>
