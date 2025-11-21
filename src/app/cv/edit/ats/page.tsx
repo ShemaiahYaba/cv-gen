@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FileDown, FileText, Share2, Trash2 } from "lucide-react";
+import { FileDown, FileText, Share2, Trash2, Save, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
@@ -161,23 +161,28 @@ export default function AtsCvEditorPage() {
   return (
     <div className="flex flex-col h-screen bg-background">
       <header className="flex h-16 items-center justify-between border-b bg-card px-4 md:px-6 shrink-0">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <VitaeForgeLogo className="h-6 w-6" />
-          <span className="font-headline font-semibold">Vitae Forge / ATS Editor</span>
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <VitaeForgeLogo className="h-6 w-6" />
+            <span className="font-headline font-semibold hidden sm:inline">Vitae Forge</span>
+          </Link>
+          <span className="text-muted-foreground hidden sm:inline">/</span>
+          <span className="font-semibold">ATS Editor</span>
+        </div>
         <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Saved</span>
-            <Button variant="outline" size="sm">
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
+            <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                </Link>
             </Button>
             <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Export PDF
+                <Save className="mr-2 h-4 w-4" />
+                Save Draft
             </Button>
             <Button size="sm">
-                <FileText className="mr-2 h-4 w-4" />
-                Export DOCX
+                <FileDown className="mr-2 h-4 w-4" />
+                Export
             </Button>
         </div>
       </header>
