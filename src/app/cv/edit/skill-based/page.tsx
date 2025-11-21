@@ -18,7 +18,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FileDown, FileText, Share2, Trash2, Save, LayoutDashboard } from "lucide-react";
+import { FileDown, FileText, Share2, Trash2, Save, LayoutDashboard, Printer } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
@@ -189,6 +189,10 @@ export default function SkillBasedCvEditorPage() {
             <Button variant="outline" size="sm">
                 <Save className="mr-2 h-4 w-4" />
                 Save Draft
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>
+                <Printer className="mr-2 h-4 w-4" />
+                Print
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
