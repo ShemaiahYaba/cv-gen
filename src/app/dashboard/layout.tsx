@@ -8,6 +8,8 @@ import {
 import { VitaeForgeLogo } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { PlusCircle } from "lucide-react"
 
 export default function DashboardLayout({
   children,
@@ -25,14 +27,14 @@ export default function DashboardLayout({
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <div className="flex items-center gap-3 cursor-pointer">
+                            <div className="flex flex-col items-end">
+                                <span className="font-semibold text-sm whitespace-nowrap">User</span>
+                                <span className="text-xs text-muted-foreground whitespace-nowrap">user@email.com</span>
+                            </div>
                             <Avatar>
                                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                                 <AvatarFallback>U</AvatarFallback>
                             </Avatar>
-                            <div className="flex flex-col">
-                                <span className="font-semibold text-sm">User</span>
-                                <span className="text-xs text-muted-foreground">user@email.com</span>
-                            </div>
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-56">
