@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PlusCircle, MoreHorizontal, FileDown, Pencil, Trash2 } from "lucide-react";
+import { PlusCircle, MoreHorizontal, FileDown, Pencil, Trash2, LayoutGrid } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import {
     DropdownMenu,
@@ -54,11 +54,18 @@ export default function DashboardPage() {
             Here are your recent CVs.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/onboarding">
-            <PlusCircle className="mr-2 h-4 w-4" /> Create New CV
-          </Link>
-        </Button>
+        <div className="flex items-center gap-4">
+            <Button variant="outline" asChild>
+                <Link href="/templates">
+                    <LayoutGrid className="mr-2 h-4 w-4" /> Browse Templates
+                </Link>
+            </Button>
+            <Button asChild>
+                <Link href="/onboarding">
+                    <PlusCircle className="mr-2 h-4 w-4" /> Create New CV
+                </Link>
+            </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
