@@ -2,32 +2,49 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowLeft, Bot, PenSquare, Star } from "lucide-react";
+import { ArrowLeft, Bot, Code, PenSquare, Star, Target } from "lucide-react";
 
 const templates = [
   {
-    href: "/cv/edit/skill-based",
-    icon: <Star className="h-6 w-6" />,
-    title: "Skill-Based",
-    description: "Highlights skills and projects over work history.",
+    href: "/cv/edit/ats",
+    icon: <Code className="h-6 w-6" />,
+    title: "Software Engineer (ATS)",
+    description: "An ATS-optimized template for experienced software engineers.",
   },
   {
-    href: "/cv/edit/ats",
-    icon: <Bot className="h-6 w-6" />,
-    title: "ATS-Friendly",
-    description: "Optimized to be easily parsed by tracking systems.",
+    href: "/cv/edit/skill-based",
+    icon: <Star className="h-6 w-6" />,
+    title: "Student (Skill-Based)",
+    description: "Highlight your skills and projects for internships and first jobs.",
   },
   {
     href: "/cv/edit/custom",
     icon: <PenSquare className="h-6 w-6" />,
-    title: "Custom",
-    description: "A flexible template with maximum customization.",
+    title: "Creative (Custom)",
+    description: "A flexible template for roles that value unique presentation.",
+  },
+  {
+    href: "/cv/edit/ats",
+    icon: <Target className="h-6 w-6" />,
+    title: "Product Manager (ATS)",
+    description: "An ATS-friendly template focused on impact and metrics.",
+  },
+  {
+    href: "/cv/edit/skill-based",
+    icon: <Bot className="h-6 w-6" />,
+    title: "AI/ML Intern (Skill-Based)",
+    description: "Showcase your AI projects and technical skills for research roles.",
+  },
+  {
+    href: "/cv/edit/custom",
+    icon: <PenSquare className="h-6 w-6" />,
+    title: "Freelancer (Custom)",
+    description: "A customizable CV to showcase a diverse portfolio of work.",
   },
 ];
 
