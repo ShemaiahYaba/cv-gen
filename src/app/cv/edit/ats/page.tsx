@@ -17,7 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { FileDown, FileText, Share2, Trash2, Save, LayoutDashboard, Printer } from "lucide-react";
+import { FileDown, FileText, Trash2, Save, LayoutDashboard, Printer, FileImage } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
@@ -205,6 +205,10 @@ export default function AtsCvEditorPage() {
                 <DropdownMenuItem>
                   <FileText className="mr-2 h-4 w-4" />
                   <span>Export as DOCX</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileImage className="mr-2 h-4 w-4" />
+                  <span>Export as Image</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
