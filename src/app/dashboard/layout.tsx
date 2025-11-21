@@ -1,15 +1,12 @@
 "use client"
 import Link from "next/link"
 import {
-  User,
   LogOut,
 } from "lucide-react"
 
 import { Form2CVLogo } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
 
 export default function DashboardLayout({
   children,
@@ -30,12 +27,10 @@ export default function DashboardLayout({
                             Log out
                         </Link>
                     </Button>
-                     <Link href="/dashboard/profile">
-                        <Avatar>
-                            <AvatarImage src="https://picsum.photos/seed/1/40/40" />
-                            <AvatarFallback>U</AvatarFallback>
-                        </Avatar>
-                    </Link>
+                    <Avatar>
+                        <AvatarImage src="https://picsum.photos/seed/1/40/40" />
+                        <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
                 </div>
             </header>
             <main className="flex-1 flex-col bg-background p-4 md:p-8">
