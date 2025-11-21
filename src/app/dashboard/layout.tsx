@@ -24,37 +24,12 @@ export default function DashboardLayout({
                     <span className="font-headline text-lg font-semibold">Form2CV</span>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <div className="flex items-center gap-3 cursor-pointer">
-                            <div className="flex flex-col items-end">
-                                <span className="font-semibold text-sm whitespace-nowrap">User</span>
-                                <span className="text-xs text-muted-foreground whitespace-nowrap">user@email.com</span>
-                            </div>
-                            <Avatar>
-                                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                                <AvatarFallback>U</AvatarFallback>
-                            </Avatar>
-                        </div>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/dashboard/profile">
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Edit Profile</span>
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/auth/sign-in">
+                    <Button variant="ghost" asChild>
+                        <Link href="/auth/sign-in">
                             <LogOut className="mr-2 h-4 w-4" />
-                            <span>Log out</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                            Log out
+                        </Link>
+                    </Button>
                 </div>
             </header>
             <main className="flex-1 flex-col bg-background p-4 md:p-8">
