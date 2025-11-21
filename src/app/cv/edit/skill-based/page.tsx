@@ -147,7 +147,7 @@ export default function SkillBasedCvEditorPage() {
         if (proj.result) bullet += `This resulted in ${proj.result.charAt(0).toLowerCase() + proj.result.slice(1)}.`;
         return bullet.trim();
       }
-      return `Developed a ${proj.name.toLowerCase()} using ${proj.tools}, which ${proj.impact.charAt(0).toLowerCase() + proj.impact.slice(1)}`;
+      return `Developed a ${proj.name.toLowerCase()}, which ${proj.impact.charAt(0).toLowerCase() + proj.impact.slice(1)}`;
     }
 
     const formatLeadershipBullet = (item: Leadership) => {
@@ -435,7 +435,7 @@ export default function SkillBasedCvEditorPage() {
                   proj.name ? (
                     <div key={i} className="text-sm mb-2">
                       <p>
-                        <strong>{proj.name}</strong> | <em>{proj.role}</em>
+                        <strong>{proj.name}</strong> {proj.tools && `(${proj.tools})`} | <em>{proj.role}</em>
                       </p>
                       <p className="whitespace-pre-wrap">
                         - {formatProjectBullet(proj)}
@@ -478,6 +478,8 @@ export default function SkillBasedCvEditorPage() {
     </div>
   );
 }
+
+    
 
     
 
