@@ -1,10 +1,7 @@
 "use client"
 import Link from "next/link"
 import {
-  Home,
-  FileText,
   PlusCircle,
-  Settings,
   User,
   LogOut,
 } from "lucide-react"
@@ -21,62 +18,47 @@ export default function DashboardLayout({
 }) {
   return (
       <div className="flex flex-col min-h-screen">
-            <header className="flex h-16 items-center gap-4 border-b bg-card px-6">
+            <header className="flex h-16 items-center justify-between gap-4 border-b bg-card px-6">
                 <Link href="/dashboard" className="flex items-center gap-2">
                     <VitaeForgeLogo className="size-7 text-primary" />
                     <span className="font-headline text-lg font-semibold">Vitae Forge</span>
                 </Link>
-                <nav className="flex-1 flex justify-center items-center gap-4">
-                     <Button variant="ghost" asChild>
-                        <Link href="/dashboard">
-                            <Home className="mr-2"/> Dashboard
-                        </Link>
-                     </Button>
-                      <Button variant="ghost" asChild>
-                        <Link href="#">
-                            <FileText className="mr-2"/> All CVs
-                        </Link>
-                     </Button>
-                      <Button variant="ghost" asChild>
+                <div className="flex items-center gap-4">
+                    <Button asChild>
                         <Link href="/onboarding">
                             <PlusCircle className="mr-2"/> Create New
                         </Link>
-                     </Button>
-                      <Button variant="ghost" asChild>
-                        <Link href="#">
-                            <Settings className="mr-2"/> Settings
-                        </Link>
-                     </Button>
-                </nav>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className="flex items-center gap-3 cursor-pointer">
-                        <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                            <AvatarFallback>U</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                            <span className="font-semibold text-sm">User</span>
-                            <span className="text-xs text-muted-foreground">user@email.com</span>
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <div className="flex items-center gap-3 cursor-pointer">
+                            <Avatar>
+                                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                                <AvatarFallback>U</AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-sm">User</span>
+                                <span className="text-xs text-muted-foreground">user@email.com</span>
+                            </div>
                         </div>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Edit Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/auth/sign-in">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <User className="mr-2 h-4 w-4" />
+                          <span>Edit Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link href="/auth/sign-in">
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Log out</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </header>
             <main className="flex-1 flex-col bg-background p-4 md:p-8">
                 {children}
