@@ -46,9 +46,9 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-headline text-3xl font-bold">Dashboard</h1>
+          <h1 className="font-headline text-3xl font-bold">Welcome back</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here are your recent CVs.
+            Here are your recent CVs.
           </p>
         </div>
         <Button asChild>
