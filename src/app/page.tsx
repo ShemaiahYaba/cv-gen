@@ -20,7 +20,7 @@ export default function Home() {
             Forge Your Future, One Perfect CV at a Time.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-xl">
-            Vitae Forge helps you create stunning, professional CVs tailored for students and job seekers. Stand out from the crowd and land your dream job.
+            Vitae Forge helps you create stunning, professional CVs tailored for students and job seekers.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Button asChild size="lg" className="font-semibold">
