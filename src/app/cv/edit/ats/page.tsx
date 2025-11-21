@@ -14,6 +14,8 @@ import {
 import { FileDown, FileText, Share2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { VitaeForgeLogo } from "@/components/icons";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
 type ContactInfo = {
     name: string;
@@ -22,12 +24,20 @@ type ContactInfo = {
     address: string;
 }
 
+type Bullet = {
+    text: string;
+    useFramework: boolean;
+    action: string;
+    method: string;
+    result: string;
+}
+
 type Experience = {
     role: string;
     company: string;
     dates: string;
     location: string;
-    bullets: string[];
+    bullets: Bullet[];
 }
 
 type Education = {
@@ -53,9 +63,18 @@ const initialData = {
             dates: "Jan 2020 – Present",
             location: "San Francisco, CA",
             bullets: [
-                "Developed and maintained client-side features for a high-traffic e-commerce platform using React and TypeScript, improving user engagement by 15%.",
-                "Collaborated with product teams to define and implement new functionalities, resulting in a 20% reduction in cart abandonment.",
-                "Built and consumed RESTful APIs with Node.js and Express, improving data retrieval times by 30%.",
+                {
+                    text: "Developed and maintained client-side features for a high-traffic e-commerce platform using React and TypeScript, improving user engagement by 15%.",
+                    useFramework: false, action: "", method: "", result: ""
+                },
+                {
+                    text: "Collaborated with product teams to define and implement new functionalities, resulting in a 20% reduction in cart abandonment.",
+                    useFramework: false, action: "", method: "", result: ""
+                },
+                {
+                    text: "Built and consumed RESTful APIs with Node.js and Express, improving data retrieval times by 30%.",
+                    useFramework: false, action: "", method: "", result: ""
+                }
             ]
         },
         {
@@ -64,8 +83,14 @@ const initialData = {
             dates: "Jun 2018 – Dec 2019",
             location: "Austin, TX",
             bullets: [
-                "Assisted in the development of a customer relationship management (CRM) system using JavaScript and SQL.",
-                "Fixed over 100 bugs and improved application performance by 10% through systematic code reviews and testing.",
+                 {
+                    text: "Assisted in the development of a customer relationship management (CRM) system using JavaScript and SQL.",
+                    useFramework: false, action: "", method: "", result: ""
+                },
+                 {
+                    text: "Fixed over 100 bugs and improved application performance by 10% through systematic code reviews and testing.",
+                    useFramework: false, action: "", method: "", result: ""
+                }
             ]
         }
     ],
@@ -92,9 +117,11 @@ export default function AtsCvEditorPage() {
         setList(updatedList);
     };
 
-    const handleBulletChange = (expIndex: number, bulletIndex: number, value: string) => {
+    const handleBulletChange = (expIndex: number, bulletIndex: number, field: keyof Bullet, value: string | boolean) => {
         const updatedExperiences = [...experiences];
-        updatedExperiences[expIndex].bullets[bulletIndex] = value;
+        const updatedBullets = [...updatedExperiences[expIndex].bullets];
+        updatedBullets[bulletIndex] = { ...updatedBullets[bulletIndex], [field]: value };
+        updatedExperiences[expIndex].bullets = updatedBullets;
         setExperiences(updatedExperiences);
     };
     
@@ -109,7 +136,7 @@ export default function AtsCvEditorPage() {
     const addBullet = (expIndex: number) => {
         const updatedExperiences = [...experiences];
         if (updatedExperiences[expIndex].bullets.length < 5) {
-             updatedExperiences[expIndex].bullets.push('');
+             updatedExperiences[expIndex].bullets.push({ text: '', useFramework: false, action: '', method: '', result: '' });
             setExperiences(updatedExperiences);
         }
     }
@@ -118,6 +145,17 @@ export default function AtsCvEditorPage() {
         const updatedExperiences = [...experiences];
         updatedExperiences[expIndex].bullets = updatedExperiences[expIndex].bullets.filter((_, i) => i !== bulletIndex);
         setExperiences(updatedExperiences);
+    }
+    
+    const formatBullet = (bullet: Bullet) => {
+        if (bullet.useFramework) {
+            let text = '';
+            if (bullet.action) text += `${bullet.action}`;
+            if (bullet.method) text += ` using ${bullet.method}`;
+            if (bullet.result) text += `, which led to ${bullet.result}`;
+            return text.trim() ? text + '.' : '';
+        }
+        return bullet.text;
     }
 
   return (
@@ -213,23 +251,46 @@ export default function AtsCvEditorPage() {
                     <div className="grid gap-2">
                         <Label>Achievements / Bullets (Max 5)</Label>
                         {exp.bullets.map((bullet, bulletIndex) => (
-                            <div key={bulletIndex} className="flex items-center gap-2">
-                                <Textarea 
-                                    value={bullet}
-                                    onChange={e => handleBulletChange(expIndex, bulletIndex, e.target.value)}
-                                    rows={2}
-                                    placeholder={`Action verb -> what you built/solved -> outcome (max 22 words)`}
-                                />
-                                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => removeBullet(expIndex, bulletIndex)}>
-                                    <Trash2 className="w-4 h-4 text-destructive" />
+                            <div key={bulletIndex} className="p-3 border rounded-md space-y-3 relative">
+                                <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 shrink-0" onClick={() => removeBullet(expIndex, bulletIndex)}>
+                                    <Trash2 className="w-3.5 h-3.5 text-destructive" />
                                 </Button>
+
+                                <div className="flex items-center space-x-2">
+                                    <Switch id={`use-framework-${expIndex}-${bulletIndex}`} checked={bullet.useFramework} onCheckedChange={(checked) => handleBulletChange(expIndex, bulletIndex, 'useFramework', checked)} />
+                                    <Label htmlFor={`use-framework-${expIndex}-${bulletIndex}`}>Use Action-Method-Result Framework</Label>
+                                </div>
+                                
+                                <div className={cn("space-y-4", bullet.useFramework ? 'hidden' : 'block')}>
+                                    <Textarea 
+                                        value={bullet.text}
+                                        onChange={e => handleBulletChange(expIndex, bulletIndex, 'text', e.target.value)}
+                                        rows={2}
+                                        placeholder={`Action verb -> what you built/solved -> outcome (max 22 words)`}
+                                    />
+                                </div>
+                                
+                                <div className={cn("space-y-2", bullet.useFramework ? 'block' : 'hidden')}>
+                                    <div className="grid gap-1">
+                                        <Label>Action</Label>
+                                        <Input placeholder="What did you do?" value={bullet.action} onChange={(e) => handleBulletChange(expIndex, bulletIndex, 'action', e.target.value)} />
+                                    </div>
+                                    <div className="grid gap-1">
+                                        <Label>Method</Label>
+                                        <Input placeholder="What tools/process did you use?" value={bullet.method} onChange={(e) => handleBulletChange(expIndex, bulletIndex, 'method', e.target.value)} />
+                                    </div>
+                                    <div className="grid gap-1">
+                                        <Label>Result</Label>
+                                        <Input placeholder="What was the outcome?" value={bullet.result} onChange={(e) => handleBulletChange(expIndex, bulletIndex, 'result', e.target.value)} />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                          {exp.bullets.length < 5 && <Button variant="outline" size="sm" onClick={() => addBullet(expIndex)}>Add Bullet</Button>}
                     </div>
                   </div>
                 ))}
-                <Button variant="outline" onClick={() => addListItem(setExperiences, {role: '', company: '', dates: '', location: '', bullets: ['']})}>Add Experience/Project</Button>
+                <Button variant="outline" onClick={() => addListItem(setExperiences, {role: '', company: '', dates: '', location: '', bullets: [{text: '', useFramework: false, action: '', method: '', result: ''}]})}>Add Experience/Project</Button>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="education">
@@ -301,7 +362,7 @@ export default function AtsCvEditorPage() {
                             </div>
                             <ul className="list-disc pl-5 mt-1 space-y-1">
                                 {exp.bullets.map((bullet, bulletIndex) => (
-                                    <li key={bulletIndex} className="text-xs">{bullet}</li>
+                                    <li key={bulletIndex} className="text-xs">{formatBullet(bullet)}</li>
                                 ))}
                             </ul>
                         </div>
