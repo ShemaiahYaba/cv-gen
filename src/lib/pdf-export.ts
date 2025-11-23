@@ -1,22 +1,30 @@
 import html2pdf from "html2pdf.js";
 
+// In src/lib/pdf-export.ts
+
+// In src/lib/pdf-export.ts
+
 export interface PdfExportOptions {
   filename?: string;
   margin?: number | [number, number, number, number];
-  image?: { type: "jpeg" | "png" | "webp"; quality: number };
+  image?: {
+    type: "jpeg" | "png" | "webp";
+    quality: number;
+  };
   html2canvas?: {
-    scale?: number;
-    useCORS?: boolean;
-    [key: string]: any; // Allow additional html2canvas options
+    scale: number;
+    useCORS: boolean;
+    letterRendering?: boolean;
+    logging?: boolean;
+    scrollY?: number;
+    scrollX?: number;
   };
   jsPDF?: {
-    unit?: string;
-    format?: string | [number, number];
-    orientation?: "portrait" | "landscape";
-  } & Record<string, any>; // Allow additional jsPDF options
-  [key: string]: any; // Allow additional html2pdf options
+    unit: string;
+    format: string | [number, number]; // Added support for custom dimensions
+    orientation: "portrait" | "landscape"; // Made orientation more specific
+  };
 }
-
 /**
  * Export a DOM element to PDF
  * @param element - The HTML element to export (typically the CV preview)
@@ -29,10 +37,14 @@ export const exportToPdf = async (
   const defaultOptions: PdfExportOptions = {
     filename: "cv-resume.pdf",
     margin: [0.5, 0.5, 0.5, 0.5], // inches: top, right, bottom, left
-    image: { type: "jpeg" as const, quality: 0.98 },
+    image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 2, // Higher quality
+      scale: 3, // Even higher quality for crisp text
       useCORS: true,
+      letterRendering: true, // Better text rendering
+      logging: false,
+      scrollY: -window.scrollY,
+      scrollX: -window.scrollX,
     },
     jsPDF: {
       unit: "in",
@@ -52,19 +64,21 @@ export const exportToPdf = async (
     clone.style.minHeight = "11in";
     clone.style.background = "white";
     clone.style.boxShadow = "none";
+    clone.style.transform = "none";
 
-    const { filename, ...html2pdfOptions } = mergedOptions;
+    // Add PDF-specific class for styling
+    clone.classList.add("pdf-export-ready");
 
-    // Create PDF
-    const worker = html2pdf()
-      .set({
-        ...html2pdfOptions,
-        filename: filename || "cv-resume.pdf",
-      })
-      .from(clone);
+    // Force all styles to be inline for better rendering
+    const computedStyles = window.getComputedStyle(element);
+    clone.style.fontFamily = computedStyles.fontFamily;
+    clone.style.fontSize = computedStyles.fontSize;
+    clone.style.lineHeight = computedStyles.lineHeight;
 
-    // Save the PDF
-    await worker.save();
+    // Ensure all fonts are loaded before rendering
+    await document.fonts.ready;
+
+    await html2pdf().set(mergedOptions).from(clone).save();
   } catch (error) {
     console.error("PDF export failed:", error);
     throw new Error("Failed to export PDF. Please try again.");

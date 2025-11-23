@@ -1,0 +1,62 @@
+/* Add this CSS to your global styles or create a new file: src/styles/pdf-export.css */
+
+/* Ensure proper rendering for PDF export */
+@media print, screen {
+  .pdf-export-ready {
+    /* Force consistent font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+
+    /* Ensure backgrounds print */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+
+    /* Force all borders to render */
+    border-collapse: separate !important;
+  }
+
+  .pdf-export-ready * {
+    /* Prevent transforms from breaking layout */
+    transform: none !important;
+
+    /* Ensure all colors render */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+
+    /* Better box model for PDF */
+    box-sizing: border-box;
+  }
+
+  /* Ensure section borders render properly */
+  .pdf-export-ready h2 {
+    border-bottom-style: solid !important;
+    border-bottom-width: 2px !important;
+    border-bottom-color: #000 !important;
+  }
+
+  /* Force bullet points to render */
+  .pdf-export-ready ul {
+    list-style-type: disc !important;
+    list-style-position: outside !important;
+  }
+
+  .pdf-export-ready li {
+    display: list-item !important;
+  }
+
+  /* Ensure italic text renders */
+  .pdf-export-ready em,
+  .pdf-export-ready i,
+  .pdf-export-ready .italic {
+    font-style: italic !important;
+  }
+
+  /* Ensure bold text renders */
+  .pdf-export-ready strong,
+  .pdf-export-ready b,
+  .pdf-export-ready .font-bold {
+    font-weight: 700 !important;
+  }
+}
