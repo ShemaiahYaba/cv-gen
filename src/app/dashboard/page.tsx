@@ -43,24 +43,27 @@ const cvs = [
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-6">
+        {/* Welcome text */}
         <div>
           <h1 className="font-headline text-3xl font-bold">Welcome back</h1>
           <p className="text-muted-foreground">
             Here are your recent CVs.
           </p>
         </div>
-        <div className="flex items-center gap-4">
-            <Button variant="outline" asChild>
-                <Link href="/templates">
-                    <LayoutGrid className="mr-2 h-4 w-4" /> Browse Templates
-                </Link>
-            </Button>
-            <Button asChild>
-                <Link href="/onboarding">
-                    <PlusCircle className="mr-2 h-4 w-4" /> Create New CV
-                </Link>
-            </Button>
+        
+        {/* Buttons - stack on mobile, side by side on desktop */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+          <Button variant="outline" asChild className="w-full sm:w-auto">
+            <Link href="/templates">
+              <LayoutGrid className="mr-2 h-4 w-4" /> Browse Templates
+            </Link>
+          </Button>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/onboarding">
+              <PlusCircle className="mr-2 h-4 w-4" /> Create New CV
+            </Link>
+          </Button>
         </div>
       </div>
 

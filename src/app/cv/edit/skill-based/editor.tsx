@@ -24,6 +24,13 @@ import { Form2CVLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { getSkillBasedTemplateData, SkillBasedCvTemplate } from "@/lib/cv-templates";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 
 // Type definitions for structured CV data
@@ -78,6 +85,7 @@ export default function SkillBasedCvEditor() {
     const [leadership, setLeadership] = useState<Leadership[]>([]);
     const [certifications, setCertifications] = useState<Certification[]>([]);
     const [showPreview, setShowPreview] = useState(false);
+    const [showExportModal, setShowExportModal] = useState(false);
 
      useEffect(() => {
         const data = getSkillBasedTemplateData(templateId || 'student-skill-based');
@@ -213,9 +221,9 @@ export default function SkillBasedCvEditor() {
                     <Printer className="mr-2 h-4 w-4" />
                     Print
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowExportModal(true)}>
                     <FileDown className="mr-2 h-4 w-4" />
-                    Export PDF
+                    Export
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -536,6 +544,71 @@ export default function SkillBasedCvEditor() {
           </div>
         </main>
       </div>
+      {/* Export Options Modal - Mobile Only */}
+      <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Export Your CV</DialogTitle>
+            <DialogDescription>
+              Choose your preferred export format
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 py-4">
+            <Button
+              variant="outline"
+              className="w-full justify-start h-auto py-4"
+              onClick={() => {
+                setShowExportModal(false);
+                window.print();
+              }}
+            >
+              <div className="flex items-start gap-3 text-left">
+                  <FileText className="h-5 w-5 mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold">
+                    Export as PDF
+                  </span>
+                  <span className="text-xs text-muted-foreground font-normal">
+                    Download your CV as a PDF document
+                  </span>
+                </div>
+              </div>
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="w-full justify-start h-auto py-4"
+              disabled
+            >
+              <div className="flex items-start gap-3 text-left">
+                <FileText className="h-5 w-5 mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold">Export as DOCX</span>
+                  <span className="text-xs text-muted-foreground font-normal">
+                    Coming soon
+                  </span>
+                </div>
+              </div>
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="w-full justify-start h-auto py-4"
+              disabled
+            >
+              <div className="flex items-start gap-3 text-left">
+                <FileImage className="h-5 w-5 mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold">Export as Image</span>
+                  <span className="text-xs text-muted-foreground font-normal">
+                    Coming soon
+                  </span>
+                </div>
+              </div>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
