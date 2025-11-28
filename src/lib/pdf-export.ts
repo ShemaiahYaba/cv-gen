@@ -1,9 +1,3 @@
-import html2pdf from "html2pdf.js";
-
-// In src/lib/pdf-export.ts
-
-// In src/lib/pdf-export.ts
-
 export interface PdfExportOptions {
   filename?: string;
   margin?: number | [number, number, number, number];
@@ -21,27 +15,28 @@ export interface PdfExportOptions {
   };
   jsPDF?: {
     unit: string;
-    format: string | [number, number]; // Added support for custom dimensions
-    orientation: "portrait" | "landscape"; // Made orientation more specific
+    format: string | [number, number];
+    orientation: "portrait" | "landscape";
   };
 }
-/**
- * Export a DOM element to PDF
- * @param element - The HTML element to export (typically the CV preview)
- * @param options - Configuration options for the PDF export
- */
+
 export const exportToPdf = async (
   element: HTMLElement,
   options: PdfExportOptions = {}
 ): Promise<void> => {
+  // Check if running in browser
+  if (typeof window === "undefined") {
+    throw new Error("PDF export can only be run in the browser");
+  }
+
   const defaultOptions: PdfExportOptions = {
     filename: "cv-resume.pdf",
-    margin: [0.5, 0.5, 0.5, 0.5], // inches: top, right, bottom, left
+    margin: [0.5, 0.5, 0.5, 0.5],
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 3, // Even higher quality for crisp text
+      scale: 3,
       useCORS: true,
-      letterRendering: true, // Better text rendering
+      letterRendering: true,
       logging: false,
       scrollY: -window.scrollY,
       scrollX: -window.scrollX,
@@ -56,6 +51,9 @@ export const exportToPdf = async (
   const mergedOptions = { ...defaultOptions, ...options };
 
   try {
+    // Dynamically import browser-only library
+    const html2pdf = (await import("html2pdf.js")).default;
+
     // Clone the element to avoid affecting the original
     const clone = element.cloneNode(true) as HTMLElement;
 
@@ -85,9 +83,6 @@ export const exportToPdf = async (
   }
 };
 
-/**
- * Generate contact-based filename for the CV
- */
 export const generatePdfFilename = (name: string): string => {
   const sanitized = name
     .trim()

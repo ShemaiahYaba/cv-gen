@@ -1,11 +1,17 @@
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-
 export const exportToPdfAdvanced = async (
   element: HTMLElement,
   filename: string = "cv-resume.pdf"
 ): Promise<void> => {
+  // Check if running in browser
+  if (typeof window === "undefined") {
+    throw new Error("PDF export can only be run in the browser");
+  }
+
   try {
+    // Dynamically import browser-only libraries
+    const html2canvas = (await import("html2canvas")).default;
+    const { jsPDF } = await import("jspdf");
+
     if (!element) {
       throw new Error("Element to export is not defined");
     }
@@ -33,18 +39,17 @@ export const exportToPdfAdvanced = async (
 
     // Wait for fonts and images to load
     await document.fonts.ready;
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Additional delay for content to render
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Create canvas with high quality settings
     const canvas = await html2canvas(element, {
-      scale: 2, // Reduced scale for better performance
+      scale: 2,
       useCORS: true,
-      logging: true, // Enable logging to help with debugging
+      logging: true,
       backgroundColor: "#ffffff",
       allowTaint: true,
       removeContainer: true,
       onclone: (clonedDoc, element) => {
-        // Ensure all elements are visible in the cloned document
         const elements = element.querySelectorAll("*");
         elements.forEach((el) => {
           const htmlEl = el as HTMLElement;
@@ -64,11 +69,10 @@ export const exportToPdfAdvanced = async (
     }
 
     // Calculate PDF dimensions (A4 aspect ratio)
-    const pdfAspectRatio = 1.414; // A4 aspect ratio (height/width)
-    let imgWidth = 8.27; // A4 width in inches (210mm)
+    const pdfAspectRatio = 1.414;
+    let imgWidth = 8.27;
     let imgHeight = (imgWidth * canvas.height) / canvas.width;
 
-    // Adjust dimensions to fit A4
     if (imgHeight > imgWidth * pdfAspectRatio) {
       imgHeight = imgWidth * pdfAspectRatio;
       imgWidth = (imgHeight * canvas.width) / canvas.height;
