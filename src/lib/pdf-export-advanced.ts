@@ -2,13 +2,11 @@ export const exportToPdfAdvanced = async (
   element: HTMLElement,
   filename: string = "cv-resume.pdf"
 ): Promise<void> => {
-  // Check if running in browser
   if (typeof window === "undefined") {
     throw new Error("PDF export can only be run in the browser");
   }
 
   try {
-    // Dynamically import browser-only libraries
     const html2canvas = (await import("html2canvas")).default;
     const { jsPDF } = await import("jspdf");
 
@@ -16,78 +14,119 @@ export const exportToPdfAdvanced = async (
       throw new Error("Element to export is not defined");
     }
 
-    // Store original styles and attributes
-    const originalStyles = {
-      position: element.style.position,
-      visibility: element.style.visibility,
-      opacity: element.style.opacity,
-      height: element.style.height,
-      width: element.style.width,
-      overflow: element.style.overflow,
-    };
+    // Create a hidden container with fixed dimensions
+    const exportContainer = document.createElement("div");
+    exportContainer.style.position = "fixed";
+    exportContainer.style.top = "-9999px";
+    exportContainer.style.left = "-9999px";
+    exportContainer.style.width = "816px"; // 8.5in at 96dpi
+    exportContainer.style.minHeight = "1056px"; // 11in at 96dpi
+    exportContainer.style.backgroundColor = "#ffffff";
+    exportContainer.style.overflow = "visible";
+    exportContainer.style.zIndex = "-1";
 
-    // Make element visible and properly sized for capture
-    element.style.position = "relative";
-    element.style.visibility = "visible";
-    element.style.opacity = "1";
-    element.style.height = "auto";
-    element.style.width = "100%";
-    element.style.overflow = "visible";
+    // Clone the element
+    const clone = element.cloneNode(true) as HTMLElement;
 
-    // Force a reflow to ensure styles are applied
-    const reflow = element.offsetHeight;
+    // Force fixed dimensions and remove responsive classes
+    clone.style.width = "816px";
+    clone.style.minHeight = "1056px";
+    clone.style.maxWidth = "816px";
+    clone.style.padding = "48px"; // 0.5in margins at 96dpi
+    clone.style.margin = "0";
+    clone.style.backgroundColor = "#ffffff";
+    clone.style.boxSizing = "border-box";
+    clone.style.overflow = "visible";
+    clone.style.transform = "none";
+    clone.style.position = "relative";
 
-    // Wait for fonts and images to load
+    // Remove aspect ratio constraint that causes issues
+    clone.style.aspectRatio = "auto";
+    clone.style.fontSize = "14px"; // Ensure consistent font size
+
+    // Append clone to container and container to body
+    exportContainer.appendChild(clone);
+    document.body.appendChild(exportContainer);
+
+    // Wait for layout and fonts
     await document.fonts.ready;
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Create canvas with high quality settings
-    const canvas = await html2canvas(element, {
-      scale: 2,
+    const canvas = await html2canvas(clone, {
+      scale: 2.5,
       useCORS: true,
-      logging: true,
+      logging: false,
       backgroundColor: "#ffffff",
       allowTaint: true,
-      removeContainer: true,
-      onclone: (clonedDoc, element) => {
-        const elements = element.querySelectorAll("*");
-        elements.forEach((el) => {
+      windowWidth: 816,
+      windowHeight: 1056,
+      width: 816,
+      height: Math.max(clone.scrollHeight, 1056),
+      onclone: (clonedDoc, clonedElement) => {
+        // Force consistent styling
+        clonedElement.style.width = "816px";
+        clonedElement.style.maxWidth = "816px";
+        clonedElement.style.aspectRatio = "auto";
+
+        // Remove shadows and outlines
+        const allElements = clonedElement.querySelectorAll("*");
+        allElements.forEach((el) => {
           const htmlEl = el as HTMLElement;
           if (htmlEl.style) {
             htmlEl.style.boxShadow = "none";
             htmlEl.style.outline = "none";
+            htmlEl.style.aspectRatio = "auto";
           }
         });
       },
     });
 
-    // Restore original styles
-    Object.assign(element.style, originalStyles);
+    // Clean up
+    document.body.removeChild(exportContainer);
 
     if (!canvas) {
       throw new Error("Failed to capture element");
     }
 
-    // Calculate PDF dimensions (A4 aspect ratio)
-    const pdfAspectRatio = 1.414;
-    let imgWidth = 8.27;
-    let imgHeight = (imgWidth * canvas.height) / canvas.width;
+    // Calculate PDF dimensions
+    const pdfWidth = 8.5; // inches
+    const pdfHeight = 11; // inches
+    const canvasAspectRatio = canvas.height / canvas.width;
+    const pdfAspectRatio = pdfHeight / pdfWidth;
 
-    if (imgHeight > imgWidth * pdfAspectRatio) {
-      imgHeight = imgWidth * pdfAspectRatio;
-      imgWidth = (imgHeight * canvas.width) / canvas.height;
+    let imgWidth = pdfWidth;
+    let imgHeight = pdfWidth * canvasAspectRatio;
+
+    // If content is taller than one page, adjust accordingly
+    if (canvasAspectRatio > pdfAspectRatio) {
+      imgHeight = pdfHeight;
+      imgWidth = pdfHeight / canvasAspectRatio;
     }
 
-    // Create PDF
+    // Create PDF with letter size
     const pdf = new jsPDF({
-      orientation: imgHeight > imgWidth ? "portrait" : "landscape",
+      orientation: "portrait",
       unit: "in",
-      format: [imgWidth, imgHeight],
+      format: "letter",
     });
 
+    // Center the image if it doesn't fill the width
+    const xOffset = (pdfWidth - imgWidth) / 2;
+    const yOffset = 0;
+
     // Add image to PDF
-    const imgData = canvas.toDataURL("image/jpeg", 1.0);
-    pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight, undefined, "FAST");
+    const imgData = canvas.toDataURL("image/jpeg", 0.98);
+    pdf.addImage(
+      imgData,
+      "JPEG",
+      xOffset,
+      yOffset,
+      imgWidth,
+      imgHeight,
+      undefined,
+      "FAST"
+    );
 
     // Save PDF
     pdf.save(filename);

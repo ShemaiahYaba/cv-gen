@@ -4,7 +4,10 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, MoreHorizontal, Eye, Pencil } from "lucide-react";
-import { exportToPdfAdvanced, generatePdfFilename } from "@/lib/pdf-export-advanced";
+import {
+  exportToPdfAdvanced,
+  generatePdfFilename,
+} from "@/lib/pdf-export-advanced";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -177,7 +180,6 @@ export default function CustomCvEditorPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
 
-
   // --- Helper Functions for Dynamic Lists ---
   const handleListChange = <T,>(
     list: T[],
@@ -234,13 +236,13 @@ export default function CustomCvEditorPage() {
   // --- Export Logic ---
   const handleExportPdf = async () => {
     if (!cvPreviewRef.current) return;
-  
+
     setIsExporting(true);
     let originalStyles = {};
-    
+
     try {
       const element = cvPreviewRef.current;
-      
+
       originalStyles = {
         position: element.style.position,
         visibility: element.style.visibility,
@@ -249,19 +251,19 @@ export default function CustomCvEditorPage() {
         width: element.style.width,
         overflow: element.style.overflow,
       };
-  
+
       element.style.position = "relative";
       element.style.visibility = "visible";
       element.style.opacity = "1";
       element.style.height = "auto";
       element.style.width = "100%";
       element.style.overflow = "visible";
-  
+
       const reflow = element.offsetHeight;
-  
+
       await document.fonts.ready;
       await new Promise((resolve) => setTimeout(resolve, 500));
-  
+
       const filename = generatePdfFilename(personal.name);
       await exportToPdfAdvanced(element, filename);
     } catch (error) {
@@ -296,116 +298,118 @@ export default function CustomCvEditorPage() {
           <span className="font-semibold">Custom Editor</span>
         </div>
         <div className="flex items-center gap-2">
-           <div className="hidden md:flex items-center gap-2">
-              <Button variant="outline" size="sm" asChild>
+          <div className="hidden md:flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/dashboard">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Dashboard
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm">
+              <Save className="mr-2 h-4 w-4" />
+              Save Draft
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>
+              <Printer className="mr-2 h-4 w-4" />
+              Print
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" disabled={isExporting}>
+                  {isExporting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <FileDown className="mr-2 h-4 w-4" />
+                  )}
+                  {isExporting ? "Exporting..." : "Export"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={handleExportPdf}
+                  disabled={isExporting}
+                >
+                  {isExporting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <FileText className="mr-2 h-4 w-4" />
+                  )}
+                  <span>
+                    {isExporting ? "Generating PDF..." : "Export as PDF"}
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Export as DOCX</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled>
+                  <FileImage className="mr-2 h-4 w-4" />
+                  <span>Export as Image</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="outline" className="md:hidden">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
                 <Link href="/dashboard">
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   Dashboard
                 </Link>
-              </Button>
-              <Button variant="outline" size="sm">
+              </DropdownMenuItem>
+              <DropdownMenuItem>
                 <Save className="mr-2 h-4 w-4" />
                 Save Draft
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => window.print()}>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.print()}>
                 <Printer className="mr-2 h-4 w-4" />
                 Print
-              </Button>
-               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="sm" disabled={isExporting}>
-                    {isExporting ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <FileDown className="mr-2 h-4 w-4" />
-                    )}
-                    {isExporting ? "Exporting..." : "Export"}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={handleExportPdf}
-                    disabled={isExporting}
-                  >
-                    {isExporting ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <FileText className="mr-2 h-4 w-4" />
-                    )}
-                    <span>
-                      {isExporting ? "Generating PDF..." : "Export as PDF"}
-                    </span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Export as DOCX</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <FileImage className="mr-2 h-4 w-4" />
-                    <span>Export as Image</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-           </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setShowExportModal(true)}
+                disabled={isExporting}
+              >
+                <FileDown className="mr-2 h-4 w-4" />
+                Export
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="outline" className="md:hidden">
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                    <Link href="/dashboard">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                    </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Save className="mr-2 h-4 w-4" />
-                    Save Draft
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.print()}>
-                    <Printer className="mr-2 h-4 w-4" />
-                    Print
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => setShowExportModal(true)}
-                  disabled={isExporting}
-                >
-                  <FileDown className="mr-2 h-4 w-4" />
-                  Export
-                </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Button
-              variant="outline"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setShowPreview(!showPreview)}
-            >
-              {showPreview ? (
-                <>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit
-                </>
-              ) : (
-                <>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Preview
-                </>
-              )}
-            </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setShowPreview(!showPreview)}
+          >
+            {showPreview ? (
+              <>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </>
+            ) : (
+              <>
+                <Eye className="mr-2 h-4 w-4" />
+                Preview
+              </>
+            )}
+          </Button>
         </div>
       </header>
       <div className="flex-1 grid md:grid-cols-2 overflow-hidden">
         {/* --- Micro-Inputs Panel --- */}
-        <aside className={cn(
-          "overflow-y-auto p-6 md:p-8 border-r",
-          "md:block",
-          showPreview ? "hidden" : "block"
-        )}>
+        <aside
+          className={cn(
+            "overflow-y-auto p-6 md:p-8 border-r",
+            "md:block",
+            showPreview ? "hidden" : "block"
+          )}
+        >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-headline font-bold">Edit Content</h2>
           </div>
@@ -977,23 +981,18 @@ export default function CustomCvEditorPage() {
         </aside>
 
         {/* --- Live CV Preview --- */}
-        <main className={cn(
-          "overflow-y-auto p-8 lg:p-12 bg-muted/30 print:p-0",
-          "md:block",
-          showPreview ? "block" : "hidden"
-        )}>
+        <main
+          className={cn(
+            "overflow-y-auto p-8 lg:p-12 bg-muted/30 print:p-0",
+            "md:block",
+            showPreview ? "block" : "hidden"
+          )}
+        >
           <div
             ref={cvPreviewRef}
             id="cv-preview"
             className="bg-white p-10 shadow-lg mx-auto max-w-4xl font-body text-black print:shadow-none print:border print:border-gray-300"
-            style={{
-              aspectRatio: "8.5 / 11",
-              width: "100%",
-              maxWidth: "210mm",
-              minHeight: "297mm",
-              margin: "0 auto",
-              position: "relative",
-            }}
+            style={{ minHeight: "11in" }}
             data-pdf-export="true"
           >
             {/* Header */}
@@ -1151,7 +1150,7 @@ export default function CustomCvEditorPage() {
                 </div>
               </div>
             </Button>
-            
+
             <Button
               variant="outline"
               className="w-full justify-start h-auto py-4"
@@ -1167,7 +1166,7 @@ export default function CustomCvEditorPage() {
                 </div>
               </div>
             </Button>
-            
+
             <Button
               variant="outline"
               className="w-full justify-start h-auto py-4"
