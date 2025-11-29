@@ -4,8 +4,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, MoreHorizontal, Eye, Pencil } from "lucide-react";
-import { exportToPdfAdvanced } from "@/lib/pdf-export-advanced";
-import { generatePdfFilename } from "@/lib/pdf-export";
+import { exportToPdfAdvanced, generatePdfFilename } from "@/lib/pdf-export-advanced";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -234,16 +233,14 @@ export default function CustomCvEditorPage() {
 
   // --- Export Logic ---
   const handleExportPdf = async () => {
-    if (!cvPreviewRef.current) {
-      console.error("CV preview element not found");
-      return;
-    }
-
+    if (!cvPreviewRef.current) return;
+  
     setIsExporting(true);
     let originalStyles = {};
+    
     try {
       const element = cvPreviewRef.current;
-      // Store original styles
+      
       originalStyles = {
         position: element.style.position,
         visibility: element.style.visibility,
@@ -252,30 +249,26 @@ export default function CustomCvEditorPage() {
         width: element.style.width,
         overflow: element.style.overflow,
       };
-
-      // Make element visible and properly sized for capture
+  
       element.style.position = "relative";
       element.style.visibility = "visible";
       element.style.opacity = "1";
       element.style.height = "auto";
       element.style.width = "100%";
       element.style.overflow = "visible";
-
-      // Force a reflow to ensure styles are applied
+  
       const reflow = element.offsetHeight;
-
-      // Wait for fonts and images to load
+  
       await document.fonts.ready;
       await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const filename = generatePdfFilename(personal.name || "resume");
+  
+      const filename = generatePdfFilename(personal.name);
       await exportToPdfAdvanced(element, filename);
     } catch (error) {
       console.error("Export failed:", error);
       alert("Failed to export PDF. Please try again.");
     } finally {
-      // Restore original styles if needed
-      if (cvPreviewRef.current && originalStyles) {
+      if (cvPreviewRef.current && Object.keys(originalStyles).length > 0) {
         Object.assign(cvPreviewRef.current.style, originalStyles);
       }
       setIsExporting(false);
@@ -303,7 +296,6 @@ export default function CustomCvEditorPage() {
           <span className="font-semibold">Custom Editor</span>
         </div>
         <div className="flex items-center gap-2">
-           {/* Desktop: Show all buttons (md and up) */}
            <div className="hidden md:flex items-center gap-2">
               <Button variant="outline" size="sm" asChild>
                 <Link href="/dashboard">
@@ -356,7 +348,6 @@ export default function CustomCvEditorPage() {
               </DropdownMenu>
            </div>
 
-            {/* Mobile: Single dropdown menu (below md) */}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" className="md:hidden">
@@ -380,6 +371,7 @@ export default function CustomCvEditorPage() {
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => setShowExportModal(true)}
+                  disabled={isExporting}
                 >
                   <FileDown className="mr-2 h-4 w-4" />
                   Export
@@ -387,7 +379,6 @@ export default function CustomCvEditorPage() {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-             {/* Mobile preview toggle - only visible below md breakpoint */}
             <Button
               variant="outline"
               size="sm"
@@ -1126,7 +1117,6 @@ export default function CustomCvEditorPage() {
         </main>
       </div>
 
-       {/* Export Options Modal - Mobile Only */}
       <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

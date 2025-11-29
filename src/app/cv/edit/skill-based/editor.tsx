@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +18,13 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FileDown, FileText, Trash2, Save, LayoutDashboard, Printer, FileImage, MoreHorizontal, Eye, Pencil } from "lucide-react";
+import { FileDown, FileText, Trash2, Save, LayoutDashboard, Printer, FileImage, MoreHorizontal, Eye, Pencil, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Form2CVLogo } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { getSkillBasedTemplateData, SkillBasedCvTemplate } from "@/lib/cv-templates";
+import { exportToPdfAdvanced, generatePdfFilename } from "@/lib/pdf-export-advanced";
 import {
   Dialog,
   DialogContent,
@@ -86,6 +87,8 @@ export default function SkillBasedCvEditor() {
     const [certifications, setCertifications] = useState<Certification[]>([]);
     const [showPreview, setShowPreview] = useState(false);
     const [showExportModal, setShowExportModal] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
+    const cvPreviewRef = useRef<HTMLDivElement>(null);
 
      useEffect(() => {
         const data = getSkillBasedTemplateData(templateId || 'student-skill-based');
@@ -142,6 +145,49 @@ export default function SkillBasedCvEditor() {
       return item.contribution;
     }
     
+    const handleExportPdf = async () => {
+      if (!cvPreviewRef.current) return;
+    
+      setIsExporting(true);
+      let originalStyles = {};
+      
+      try {
+        const element = cvPreviewRef.current;
+        
+        originalStyles = {
+          position: element.style.position,
+          visibility: element.style.visibility,
+          opacity: element.style.opacity,
+          height: element.style.height,
+          width: element.style.width,
+          overflow: element.style.overflow,
+        };
+    
+        element.style.position = "relative";
+        element.style.visibility = "visible";
+        element.style.opacity = "1";
+        element.style.height = "auto";
+        element.style.width = "100%";
+        element.style.overflow = "visible";
+    
+        const reflow = element.offsetHeight;
+    
+        await document.fonts.ready;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+    
+        const filename = generatePdfFilename(personal.fullName);
+        await exportToPdfAdvanced(element, filename);
+      } catch (error) {
+        console.error("Export failed:", error);
+        alert("Failed to export PDF. Please try again.");
+      } finally {
+        if (cvPreviewRef.current && Object.keys(originalStyles).length > 0) {
+          Object.assign(cvPreviewRef.current.style, originalStyles);
+        }
+        setIsExporting(false);
+      }
+    };
+
     if (!initialData) {
         return <div className="flex h-screen items-center justify-center">Loading...</div>;
     }
@@ -159,7 +205,6 @@ export default function SkillBasedCvEditor() {
           <span className="font-semibold">Skill-Based Editor</span>
         </div>
         <div className="flex items-center gap-2">
-            {/* Desktop: Show all buttons (md and up) */}
             <div className="hidden md:flex items-center gap-2">
                 <Button variant="outline" size="sm" asChild>
                     <Link href="/dashboard">
@@ -176,30 +221,29 @@ export default function SkillBasedCvEditor() {
                     Print
                 </Button>
                 <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button size="sm">
-                    <FileDown className="mr-2 h-4 w-4" />
-                    Export
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" disabled={isExporting}>
+                        {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileDown className="mr-2 h-4 w-4" />}
+                        {isExporting ? 'Exporting...' : 'Export'}
                     </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Export as PDF</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleExportPdf} disabled={isExporting}>
+                      {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
+                      <span>{isExporting ? 'Generating PDF...' : 'Export as PDF'}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Export as DOCX</span>
+                    <DropdownMenuItem disabled>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>Export as DOCX</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                    <FileImage className="mr-2 h-4 w-4" />
-                    <span>Export as Image</span>
+                    <DropdownMenuItem disabled>
+                      <FileImage className="mr-2 h-4 w-4" />
+                      <span>Export as Image</span>
                     </DropdownMenuItem>
-                </DropdownMenuContent>
+                  </DropdownMenuContent>
                 </DropdownMenu>
             </div>
 
-            {/* Mobile: Single dropdown menu (below md) */}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" className="md:hidden">
@@ -221,14 +265,13 @@ export default function SkillBasedCvEditor() {
                     <Printer className="mr-2 h-4 w-4" />
                     Print
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShowExportModal(true)}>
+                <DropdownMenuItem onClick={() => setShowExportModal(true)} disabled={isExporting}>
                     <FileDown className="mr-2 h-4 w-4" />
                     Export
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Mobile preview toggle - only visible below md breakpoint */}
             <Button
                 variant="outline"
                 size="sm"
@@ -477,7 +520,7 @@ export default function SkillBasedCvEditor() {
           "md:block",
           showPreview ? "block" : "hidden"
         )}>
-          <div className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black" style={{ aspectRatio: '8.5 / 11'}}>
+          <div ref={cvPreviewRef} className="bg-white p-12 shadow-lg mx-auto max-w-4xl font-body text-black" style={{ aspectRatio: '8.5 / 11'}}>
             <h1 className="text-4xl font-bold font-headline text-center mb-2">{personal.fullName}</h1>
             <div className="flex flex-col items-center text-xs mb-6 space-y-1">
                 {personal.email && <span>{personal.email}</span>}
@@ -544,7 +587,6 @@ export default function SkillBasedCvEditor() {
           </div>
         </main>
       </div>
-      {/* Export Options Modal - Mobile Only */}
       <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -559,14 +601,15 @@ export default function SkillBasedCvEditor() {
               className="w-full justify-start h-auto py-4"
               onClick={() => {
                 setShowExportModal(false);
-                window.print();
+                handleExportPdf();
               }}
+              disabled={isExporting}
             >
               <div className="flex items-start gap-3 text-left">
-                  <FileText className="h-5 w-5 mt-0.5 shrink-0" />
+                  {isExporting ? <Loader2 className="h-5 w-5 mt-0.5 animate-spin shrink-0" /> : <FileText className="h-5 w-5 mt-0.5 shrink-0" />}
                 <div className="flex flex-col gap-1">
                   <span className="font-semibold">
-                    Export as PDF
+                    {isExporting ? "Generating PDF..." : "Export as PDF"}
                   </span>
                   <span className="text-xs text-muted-foreground font-normal">
                     Download your CV as a PDF document
