@@ -1,16 +1,13 @@
 // src/app/dashboard/page.tsx
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, LayoutGrid, Loader2 } from "lucide-react";
-import { useUserCvs, useCreateCv } from "@/hooks/use-cv";
+import { useUserCvs } from "@/hooks/use-cv";
 import { CvCard } from "@/components/dashboard/cv-card";
-import { CreateCvModal } from "@/components/dashboard/create-cv-modal";
 
 export default function DashboardPage() {
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const { data: cvs, isLoading, error } = useUserCvs("updated_at");
 
   if (isLoading) {
@@ -64,11 +61,10 @@ export default function DashboardPage() {
                 <LayoutGrid className="mr-2 h-4 w-4" /> Browse Templates
               </Link>
             </Button>
-            <Button
-              className="w-full sm:w-auto"
-              onClick={() => setShowCreateModal(true)}
-            >
-              <PlusCircle className="mr-2 h-4 w-4" /> Create New CV
+            <Button className="w-full sm:w-auto" asChild>
+              <Link href="/onboarding" className="flex items-center">
+                <PlusCircle className="mr-2 h-4 w-4" /> Create New CV
+              </Link>
             </Button>
           </div>
         </div>
@@ -85,8 +81,10 @@ export default function DashboardPage() {
               Create your first CV to get started building your professional
               resume.
             </p>
-            <Button onClick={() => setShowCreateModal(true)}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Create Your First CV
+            <Button asChild>
+              <Link href="/onboarding" className="flex items-center">
+                <PlusCircle className="mr-2 h-4 w-4" /> Create Your First CV
+              </Link>
             </Button>
           </div>
         ) : (
@@ -97,8 +95,6 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-
-      <CreateCvModal open={showCreateModal} onOpenChange={setShowCreateModal} />
     </>
   );
 }
