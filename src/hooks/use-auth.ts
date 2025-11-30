@@ -27,7 +27,8 @@ export function useRegister() {
   return useMutation({
     mutationFn: (input: RegisterInput) => authController.register(input),
     onSuccess: () => {
-      router.push("/auth/verify-email");
+      // FIXED: Redirect to onboarding instead of verify-email
+      router.push("/onboarding");
     },
   });
 }
