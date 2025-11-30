@@ -1,5 +1,6 @@
 // src/hooks/use-auth.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { authController } from "@/controllers/auth.controller";
 import type {
   LoginInput,
@@ -23,14 +24,25 @@ export function useCurrentUser() {
 export function useRegister() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  return useMutation({
-    mutationFn: (input: RegisterInput) => authController.register(input),
-    onSuccess: () => {
-      // FIXED: Redirect to onboarding instead of verify-email
-      router.push("/onboarding");
-    },
-  });
+  return {
+    ...useMutation({
+      mutationFn: (input: RegisterInput) => authController.register(input),
+      onSuccess: (data) => {
+        if (data?.needsVerification) {
+          setShowSuccess(true);
+          // Show success message for 3 seconds before redirecting
+          setTimeout(() => {
+            router.push("/onboarding");
+          }, 3000);
+        } else {
+          router.push("/onboarding");
+        }
+      },
+    }),
+    showSuccess,
+  };
 }
 
 export function useLogin() {

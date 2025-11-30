@@ -143,6 +143,16 @@ export default function RegisterPage() {
               </p>
             )}
 
+            {register.showSuccess && (
+              <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+                <p>
+                  Registration successful! Please check your email to verify
+                  your account.
+                </p>
+                <p>You will be redirected to the onboarding page shortly...</p>
+              </div>
+            )}
+
             <Button
               type="submit"
               className="w-full"
