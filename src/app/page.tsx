@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { AnimatedShapes } from '@/components/landing/AnimatedShapes';
-import { Form2CVLogo } from '@/components/icons';
-import { ArrowRight, LogIn, LogOut } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { AnimatedShapes } from "@/components/landing/AnimatedShapes";
+import { Form2CVLogo } from "@/components/icons";
+import { ArrowRight, LogIn, LogOut } from "lucide-react";
 
 export default function Home() {
   return (
@@ -17,24 +17,30 @@ export default function Home() {
       <main className="flex-1 flex items-center justify-center text-center p-4 z-10">
         <div className="flex flex-col items-center gap-6 max-w-2xl">
           <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-            Small inputs <LogIn className="inline-block h-12 w-12 text-primary" /> in.
+            Small inputs{" "}
+            <LogIn className="inline-block h-12 w-12 text-primary" /> in.
             <br />
-            Professional CV <LogOut className="inline-block h-12 w-12 text-primary" /> out.
+            Professional CV{" "}
+            <LogOut className="inline-block h-12 w-12 text-primary" /> out.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-xl">
-            Form2CV helps you create stunning, professional CVs tailored for students and job seekers.
+            Form2CV helps you create stunning, professional CVs tailored for
+            students and job seekers.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Button asChild size="lg" className="font-semibold">
-              <Link href="/auth/sign-up">
+              <Link href="/auth/register">
                 Start Building for Free
                 <ArrowRight />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="font-semibold">
-              <Link href="/auth/sign-in">
-                Sign In
-              </Link>
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="font-semibold"
+            >
+              <Link href="/auth/login">Sign In</Link>
             </Button>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { QueryProvider } from "@/providers/query-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 
 export const metadata: Metadata = {
   title: "Form2CV",
-  description: "Generate your professional CV with ease.",
+  description: "Generate a professional CV within minutes.",
 };
 
 export default function RootLayout({
@@ -31,8 +33,12 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        {children}
-        <Toaster />
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
