@@ -50,6 +50,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cvController } from "@/controllers/cv.controller";
 
 // Type definitions for structured CV data
 type Project = {
@@ -114,6 +115,37 @@ export default function SkillBasedCvEditor() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const cvPreviewRef = useRef<HTMLDivElement>(null);
+  // Add this at the top of your SkillBasedCvEditor component
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    const loadCvData = async () => {
+      try {
+        if (id) {
+          const cvData = await cvController.getCv(id);
+          if (cvData) {
+            // Set all the state from cvData.content
+            const content = cvData.content;
+            setPersonal(content.personal);
+            setSummary(content.summary);
+            setSkills(content.skills);
+            setProjects(content.projects);
+            setEducation(content.education);
+            setLeadership(content.leadership);
+            setCertifications(content.certifications);
+          }
+        } else if (templateId) {
+          const template = getSkillBasedTemplateData(templateId);
+          setInitialData(template);
+        }
+      } catch (error) {
+        console.error("Error loading CV data:", error);
+        // Handle error (e.g., show error toast)
+      }
+    };
+
+    loadCvData();
+  }, [id, templateId]);
 
   useEffect(() => {
     const data = getSkillBasedTemplateData(templateId || "student-skill-based");
