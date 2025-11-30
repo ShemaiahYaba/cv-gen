@@ -22,6 +22,7 @@ export const profiles = pgTable(
     avatarSeed: text("avatar_seed")
       .notNull()
       .default(sql`gen_random_uuid()::text`),
+    isOnboarded: boolean("is_onboarded").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

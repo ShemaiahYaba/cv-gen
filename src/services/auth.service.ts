@@ -10,6 +10,7 @@ export class AuthService {
     );
   }
 
+  // In src/services/auth.service.ts
   async signUp(email: string, password: string, fullName: string) {
     const supabase = this.getClient();
     const { data, error } = await supabase.auth.signUp({
@@ -23,8 +24,13 @@ export class AuthService {
       },
     });
 
-    if (error) throw error;
-    return data;
+    if (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
+
+    // Ensure we always return an object with a data property
+    return { data: data || null, error: null };
   }
 
   async signIn(email: string, password: string) {

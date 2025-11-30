@@ -29,16 +29,11 @@ export function useRegister() {
   return {
     ...useMutation({
       mutationFn: (input: RegisterInput) => authController.register(input),
-      onSuccess: (data) => {
-        if (data?.needsVerification) {
-          setShowSuccess(true);
-          // Show success message for 3 seconds before redirecting
-          setTimeout(() => {
-            router.push("/onboarding");
-          }, 3000);
-        } else {
-          router.push("/onboarding");
-        }
+      onSuccess: () => {
+        setShowSuccess(true);
+        setTimeout(() => {
+          router.push("/auth/login");
+        }, 3000);
       },
     }),
     showSuccess,

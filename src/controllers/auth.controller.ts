@@ -10,15 +10,25 @@ import type {
 
 export class AuthController {
   async register(input: RegisterInput) {
-    const { data } = await authService.signUp(
+    const response = await authService.signUp(
       input.email,
       input.password,
       input.fullName
     );
 
+    // Handle the case where the response might be undefined or null
+    if (!response) {
+      throw new Error("No response received from auth service");
+    }
+
+    // Handle the case where data might be undefined
+    if (!response.data) {
+      throw new Error("No data received from auth service");
+    }
+
     return {
-      user: data.user,
-      needsVerification: !data.user?.email_confirmed_at,
+      user: response.data.user || null,
+      needsVerification: !response.data.user?.email_confirmed_at,
     };
   }
 
